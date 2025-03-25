@@ -1,0 +1,32 @@
+.gallery-container {
+  width: calc(100vw - 40px);
+  margin: 0px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(25, 1fr); /* 25 колонок */
+  grid-template-rows: repeat(
+    9,
+    calc((100vh - 100px) / 9)
+  ); /* 9 рядов с одинаковой высотой */
+  gap: 5px;
+  width: 100%;
+  height: inherit;
+  box-sizing: border-box;
+}
+
+.gallery img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.5s ease-in-out;
+  opacity: 0;
+}
+
+.gallery img.loaded {
+  opacity: 1;
+}
