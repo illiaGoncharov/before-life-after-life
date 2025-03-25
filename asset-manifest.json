@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/before-life-after-life/static/css/main.130ccf4d.css",
-    "main.js": "/before-life-after-life/static/js/main.7e950f05.js",
+    "main.js": "/before-life-after-life/static/js/main.e68cd7bf.js",
     "static/js/453.942b8962.chunk.js": "/before-life-after-life/static/js/453.942b8962.chunk.js",
     "index.html": "/before-life-after-life/index.html",
     "main.130ccf4d.css.map": "/before-life-after-life/static/css/main.130ccf4d.css.map",
-    "main.7e950f05.js.map": "/before-life-after-life/static/js/main.7e950f05.js.map",
+    "main.e68cd7bf.js.map": "/before-life-after-life/static/js/main.e68cd7bf.js.map",
     "453.942b8962.chunk.js.map": "/before-life-after-life/static/js/453.942b8962.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.130ccf4d.css",
-    "static/js/main.7e950f05.js"
+    "static/js/main.e68cd7bf.js"
   ]
 }
