@@ -80,7 +80,9 @@ function Text() {
   const playAudio = (idx, isFirstSet) => {
     const audioIndex = isFirstSet ? idx + 1 : firstSet.length + idx + 1;
     const audio = new Audio(
-      `/audio/audio_${audioIndex.toString().padStart(2, "0")}.mp3`
+      `${process.env.PUBLIC_URL}/audio/audio_${audioIndex
+        .toString()
+        .padStart(2, "0")}.mp3`
     );
     audioRef.current = audio;
     audio.play();

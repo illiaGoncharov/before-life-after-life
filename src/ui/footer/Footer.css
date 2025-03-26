@@ -10,6 +10,11 @@
   padding-bottom: 15px;
 }
 
+.footer span {
+  opacity: 0.4;
+  color: white;
+}
+
 .footer-button {
   padding: 0;
   cursor: pointer;
@@ -22,4 +27,23 @@
 
 .footer-button:hover {
   opacity: 0.3;
+}
+
+.footer-button.active {
+  opacity: 0.8;
+}
+
+.footer-filter {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.footer-filter-label {
+  padding: 0;
+  opacity: 0.4;
+  text-transform: uppercase;
+  background-color: transparent;
+  border: none;
+  color: white;
 }
