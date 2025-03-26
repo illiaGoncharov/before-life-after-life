@@ -1,0 +1,33 @@
+.by-contributor-container {
+}
+
+.image-contributor-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  height: calc(100vh - 175px);
+  overflow-y: auto;
+}
+
+.image-contributor-item {
+  width: 100%;
+  object-fit: cover;
+}
+
+.contributor-navigation {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  padding-top: 20px;
+}
+
+.contributor-navigation button {
+  background-color: transparent;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.4;
+  text-transform: uppercase;
+  background-color: transparent;
+  border: none;
+  color: white;
+}

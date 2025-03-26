@@ -1,10 +1,10 @@
-.image-grid {
+.image-byprompt-grid {
   padding-top: 150px;
   display: flex;
   gap: 10px;
 }
 
-.image-item {
+.image-byprompt-item {
   object-fit: contain;
   width: calc((100vw - 40px - 40px) / 5);
 }

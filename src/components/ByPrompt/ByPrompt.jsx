@@ -42,7 +42,7 @@ function ByPrompt() {
           />
         ))}
       </div> */}
-      <div className="image-grid">
+      <div className="image-byprompt-grid">
         {contributors.map((contributor) => {
           const imageNumber = (currentIndex % totalPrompts) + 1;
           return (
@@ -54,7 +54,7 @@ function ByPrompt() {
                 imageNumber
               ).padStart(2, "0")}.png`}
               alt={`${contributor} ${imageNumber}`}
-              className="image-item"
+              className="image-byprompt-item"
             />
           );
         })}
