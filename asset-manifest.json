@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/before-life-after-life/static/css/main.202a386d.css",
-    "main.js": "/before-life-after-life/static/js/main.953809d6.js",
+    "main.css": "/before-life-after-life/static/css/main.84b12b7e.css",
+    "main.js": "/before-life-after-life/static/js/main.d4537b5d.js",
     "static/js/453.942b8962.chunk.js": "/before-life-after-life/static/js/453.942b8962.chunk.js",
     "static/media/Hershey-Noailles-Times-Triplex-Bold.ttf": "/before-life-after-life/static/media/Hershey-Noailles-Times-Triplex-Bold.40d68a93c35054194e83.ttf",
     "index.html": "/before-life-after-life/index.html",
-    "main.202a386d.css.map": "/before-life-after-life/static/css/main.202a386d.css.map",
-    "main.953809d6.js.map": "/before-life-after-life/static/js/main.953809d6.js.map",
+    "main.84b12b7e.css.map": "/before-life-after-life/static/css/main.84b12b7e.css.map",
+    "main.d4537b5d.js.map": "/before-life-after-life/static/js/main.d4537b5d.js.map",
     "453.942b8962.chunk.js.map": "/before-life-after-life/static/js/453.942b8962.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.202a386d.css",
-    "static/js/main.953809d6.js"
+    "static/css/main.84b12b7e.css",
+    "static/js/main.d4537b5d.js"
   ]
 }
