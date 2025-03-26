@@ -1,0 +1,20 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 15px;
+  padding-bottom: 5px;
+}
+
+.header-button {
+  cursor: pointer;
+  opacity: 0.4;
+  text-transform: uppercase;
+  background-color: transparent;
+  border: none;
+  color: white;
+  padding: 0;
+}
+
+.header-button:hover {
+  opacity: 0.3;
+}

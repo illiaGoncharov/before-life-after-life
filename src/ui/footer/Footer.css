@@ -1,0 +1,25 @@
+.footer {
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+  right: 0;
+  width: calc(100vw - 40px);
+  display: flex;
+  justify-content: space-between;
+  padding-top: 5px;
+  padding-bottom: 15px;
+}
+
+.footer-button {
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.4;
+  text-transform: uppercase;
+  background-color: transparent;
+  border: none;
+  color: white;
+}
+
+.footer-button:hover {
+  opacity: 0.3;
+}

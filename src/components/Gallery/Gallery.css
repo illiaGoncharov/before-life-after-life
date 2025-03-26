@@ -8,11 +8,8 @@
 
 .gallery {
   display: grid;
-  grid-template-columns: repeat(25, 1fr); /* 25 колонок */
-  grid-template-rows: repeat(
-    9,
-    calc((100vh - 100px) / 9)
-  ); /* 9 рядов с одинаковой высотой */
+  grid-template-columns: repeat(25, 1fr);
+  grid-template-rows: repeat(9, calc((100vh - 150px) / 9));
   gap: 5px;
   width: 100%;
   height: inherit;
