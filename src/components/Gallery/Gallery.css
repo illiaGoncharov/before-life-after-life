@@ -27,3 +27,12 @@
 .gallery img.loaded {
   opacity: 1;
 }
+
+.image-container.hidden img {
+  cursor: pointer;
+  opacity: 0; /* Скрываем изображение */
+}
+
+.image-container.hidden {
+  background-color: black; /* Черный фон */
+}

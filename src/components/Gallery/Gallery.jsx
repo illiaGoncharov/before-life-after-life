@@ -13,6 +13,7 @@ const BATCH_SIZE = 10; // Загружаем по 10 изображений за
 
 export default function Gallery() {
   const [loadedImages, setLoadedImages] = useState([]);
+  const [hiddenImages, setHiddenImages] = useState(new Set()); // Используем Set для хранения скрытых изображений
 
   useEffect(() => {
     const preloadImages = async () => {
@@ -39,17 +40,30 @@ export default function Gallery() {
     preloadImages();
   }, []);
 
+  // Функция для скрытия изображения при наведении
+  const handleMouseEnter = (src) => {
+    setHiddenImages((prev) => new Set(prev).add(src)); // Добавляем изображение в Set
+  };
+
   return (
     <div className="gallery-container">
       <div className="gallery">
         {images.map((src, index) => (
-          <img
+          <div
             key={index}
-            src={loadedImages.includes(src) ? src : undefined} // Загружаем только когда изображение доступно
-            alt={`Image ${index + 1}`}
-            loading="lazy"
-            className={loadedImages.includes(src) ? "loaded" : "loading"}
-          />
+            className={`image-container ${
+              hiddenImages.has(src) ? "hidden" : ""
+            }`} // Проверяем, скрыто ли изображение
+            onMouseEnter={() => handleMouseEnter(src)} // Обработчик наведения
+          >
+            <img
+              key={index}
+              src={loadedImages.includes(src) ? src : undefined}
+              alt={`Image ${index + 1}`}
+              loading="lazy"
+              className={loadedImages.includes(src) ? "loaded" : "loading"}
+            />
+          </div>
         ))}
       </div>
     </div>

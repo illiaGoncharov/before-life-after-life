@@ -10,6 +10,7 @@ function ByPrompt() {
   const [loadingParts, setLoadingParts] = useState(
     Array(totalPrompts).fill(false)
   );
+  const [lastInteractionTime, setLastInteractionTime] = useState(Date.now());
 
   useEffect(() => {
     // Симуляция загрузки контроллера
@@ -30,6 +31,8 @@ function ByPrompt() {
         prevGroup();
       } else if (event.key === "ArrowRight") {
         nextGroup();
+
+        setLastInteractionTime(Date.now());
       }
     };
 
@@ -41,6 +44,18 @@ function ByPrompt() {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [currentIndex]);
+
+  useEffect(() => {
+    // Функция для автоматического перехода вправо через 5 секунды без взаимодействия
+    const autoMoveTimeout = setInterval(() => {
+      if (Date.now() - lastInteractionTime >= 5000) {
+        nextGroup();
+      }
+    }, 5000);
+
+    // Убираем таймер при размонтировании
+    return () => clearInterval(autoMoveTimeout);
+  }, [lastInteractionTime]);
 
   const nextGroup = () => {
     setCurrentIndex((prev) => (prev + 1 < totalPrompts ? prev + 1 : prev));
