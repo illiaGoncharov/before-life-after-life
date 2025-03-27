@@ -6,6 +6,22 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "Hershey-Noailles-Futura-Triplex-Regular"; /* Название шрифта */
+  src: url("./../../assets/fonts/Hershey-Noailles/Hershey-Noailles-Futura-Triplex-Regular.ttf")
+    format("truetype"); /* Путь к шрифту */
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Hershey-Noailles-Times-Triplex-Italic-Regular"; /* Название шрифта */
+  src: url("./../../assets/fonts/Hershey-Noailles/Hershey-Noailles-Times-Triplex-Italic-Regular.ttf")
+    format("truetype"); /* Путь к шрифту */
+  font-weight: normal;
+  font-style: normal;
+}
+
 .App {
   position: relative;
   /* height: 100vh; */

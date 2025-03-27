@@ -1,11 +1,12 @@
 .footer {
+  font-family: "Hershey-Noailles-Futura-Triplex-Regular";
   position: absolute;
   bottom: 0;
   left: 20px;
   right: 0;
   width: calc(100vw - 40px);
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   padding-top: 5px;
   padding-bottom: 15px;
 }
@@ -16,6 +17,7 @@
 }
 
 .footer-button {
+  font-family: "Hershey-Noailles-Futura-Triplex-Regular";
   font-size: 0.85rem;
   padding: 0;
   cursor: pointer;
@@ -35,12 +37,16 @@
 }
 
 .footer-filter {
+  margin-left: 205px;
   display: flex;
   flex-direction: row;
   gap: 5px;
+  align-items: baseline;
 }
 
 .footer-filter-label {
+  font-family: "Hershey-Noailles-Futura-Triplex-Regular";
+  font-size: 0.85rem;
   padding: 0;
   opacity: 0.4;
   text-transform: uppercase;

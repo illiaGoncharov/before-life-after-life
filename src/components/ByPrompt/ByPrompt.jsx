@@ -24,6 +24,24 @@ function ByPrompt() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowLeft") {
+        prevGroup();
+      } else if (event.key === "ArrowRight") {
+        nextGroup();
+      }
+    };
+
+    // Добавляем слушатель события на нажатие клавиш
+    document.addEventListener("keydown", handleKeyDown);
+
+    // Убираем слушатель при размонтировании компонента
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [currentIndex]);
+
   const nextGroup = () => {
     setCurrentIndex((prev) => (prev + 1 < totalPrompts ? prev + 1 : prev));
   };
@@ -34,14 +52,6 @@ function ByPrompt() {
 
   return (
     <div className="by-prompt-container">
-      {/* <div className="header-controller">
-        {loadingParts.map((loaded, index) => (
-          <div
-            key={index}
-            className={`controller-part ${loaded ? "loaded" : "loading"}`}
-          />
-        ))}
-      </div> */}
       <div className="image-byprompt-grid">
         {contributors.map((contributor) => {
           const imageNumber = (currentIndex % totalPrompts) + 1;
@@ -59,7 +69,7 @@ function ByPrompt() {
           );
         })}
       </div>
-      <div className="footer-byprompt-navigation">
+      {/* <div className="footer-byprompt-navigation">
         <button
           className="footer-byprompt-button"
           onClick={prevGroup}
@@ -75,7 +85,7 @@ function ByPrompt() {
         >
           &gt;
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
