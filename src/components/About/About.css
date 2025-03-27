@@ -1,0 +1,29 @@
+.about-container {
+  margin-bottom: 45px;
+}
+
+.about-container p {
+  font-family: "Hershey-Noailles-Times";
+  max-width: 60%;
+  margin-bottom: 20px;
+  color: white;
+  opacity: 0.8;
+  margin-top: 20px;
+}
+
+.about-image-container {
+  margin-left: 30%;
+}
+
+.about-image {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+}
+
+.image-caption {
+  font-style: italic;
+  color: white;
+  opacity: 0.4 !important;
+  width: 300px;
+}
