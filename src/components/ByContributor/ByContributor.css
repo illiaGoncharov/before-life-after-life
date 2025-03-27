@@ -1,11 +1,8 @@
-.by-contributor-container {
-}
-
 .image-contributor-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 5px;
-  height: calc(100vh - 175px);
+  height: calc(100vh - 98px);
   overflow-y: auto;
 }
 
@@ -17,11 +14,13 @@
 .contributor-navigation {
   display: flex;
   gap: 10px;
-  justify-content: center;
+  justify-content: right;
   padding-top: 20px;
 }
 
 .contributor-navigation button {
+  font-family: "Hershey-Noailles-Futura-Triplex-Regular";
+  font-size: 0.85rem;
   background-color: transparent;
   padding: 0;
   cursor: pointer;
@@ -30,4 +29,5 @@
   background-color: transparent;
   border: none;
   color: white;
+  z-index: 10;
 }

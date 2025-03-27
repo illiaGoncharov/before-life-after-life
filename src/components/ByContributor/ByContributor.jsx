@@ -24,13 +24,14 @@ function ByContributor() {
         ))}
       </div>
       <div className="contributor-navigation">
-        {contributors.map((contributor) => (
+        {contributors.map((contributor, index) => (
           <button
             key={contributor}
             onClick={() => setSelectedContributor(contributor)}
             className={selectedContributor === contributor ? "active" : ""}
           >
-            {contributor}
+            {/* {contributor} */}
+            {index + 1} {index < contributors.length - 1 && "|"}
           </button>
         ))}
       </div>
