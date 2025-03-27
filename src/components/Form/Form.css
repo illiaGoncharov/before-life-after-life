@@ -1,0 +1,187 @@
+.dimmed {
+  opacity: 0.5;
+}
+
+.form-text-view {
+  max-width: 355px;
+  width: 350px;
+}
+
+.form-text-list {
+  list-style: none;
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+  padding-inline-start: 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 20px;
+}
+
+.form-text-list-element {
+  font-family: "Hershey-Noailles-Times";
+  display: flex;
+  gap: 30px;
+}
+
+.form-text-list-element span {
+  color: white;
+  opacity: 0.4;
+  width: 40px;
+}
+
+.form-text-list-element span.red {
+  color: #ea8484;
+  opacity: 0.8;
+}
+
+.form-text-list-element p {
+  max-width: 250px;
+}
+.form-container {
+  display: flex;
+  gap: 25px;
+}
+
+.form-text-next-button {
+  box-sizing: border-box;
+  margin-left: 50px;
+  padding: 0;
+  background: transparent;
+  color: white;
+  border: none;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.form-text-next-button:hover {
+  opacity: 0.4;
+}
+
+/* Сетка 7x7 с фиксированным размером */
+.form-image-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  gap: 5px;
+  width: 710px; /* 7 * 100px + 6 * 5px (отступы) */
+  height: 710px;
+  overflow-y: auto;
+  /* border: 2px solid #ddd; */
+  /* padding: 10px; */
+}
+
+.form-grid-cell {
+  width: 100px;
+  height: 100px;
+  background: #161616;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.form-grid-cell label {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.form-grid-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.form-upload-button {
+  margin-top: 20px;
+  box-sizing: border-box;
+  padding: 0;
+  background: transparent;
+  color: white;
+  border: none;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.form-upload-button:hover {
+  opacity: 0.4;
+}
+
+.form-data-view {
+  font-family: "Hershey-Noailles-Times";
+  width: 25vw;
+  display: flex;
+}
+
+.form-data-view label {
+  display: flex;
+  flex-direction: row;
+  gap: 35px;
+}
+
+.form-data-view label p {
+  width: 80%;
+}
+
+.form-data-view label > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-data-view-form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: inherit;
+}
+
+.form-data-view-form input,
+.form-data-view-form input::placeholder {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: white;
+}
+
+.form-data-view-form .radio-group input {
+  width: initial;
+  height: initial;
+}
+
+.form-data-view-form .radio-group label {
+  justify-content: left;
+  gap: 5px;
+}
+
+.form-data-view-form .paypal {
+  margin-left: 25px;
+  opacity: 0.4;
+}
+
+.form-data-view-submit {
+  margin-top: 20px;
+  box-sizing: border-box;
+  padding: 0;
+  background: transparent;
+  color: white;
+  border: none;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.form-data-view-submit:hover {
+  opacity: 0.4;
+}
+
+.success-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  opacity: 0.4;
+  text-align: center;
+}
