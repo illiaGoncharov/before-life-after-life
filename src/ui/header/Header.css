@@ -6,6 +6,7 @@
 }
 
 .header-button {
+  font-size: 0.85rem;
   cursor: pointer;
   opacity: 0.4;
   text-transform: uppercase;
@@ -17,4 +18,8 @@
 
 .header-button:hover {
   opacity: 0.3;
+}
+
+.header-button.active {
+  opacity: 0.8;
 }

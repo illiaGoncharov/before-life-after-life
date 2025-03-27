@@ -84,8 +84,8 @@ function About() {
         _ <br />
         _ <br />
         <br />
-        for more @streeterror© <br />
-        Ècole cantonale d’art de Lausanne & Andrey Lopatin
+        for more @streeterror
+        <br />© Ècole cantonale d’art de Lausanne & Andrey Lopatin
       </p>
     </div>
   );

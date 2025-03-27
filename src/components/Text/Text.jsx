@@ -1,128 +1,158 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Text.css";
 
-const firstSet = [
-  "before life",
-  "home",
-  "family at home",
-  "birth",
-  "unintended child",
-  "puberty",
-  "bullied teen",
-  "love",
-  "love between men",
-  "love between women",
-  "sex",
-  "unsafe sex",
-  "healthy person",
-  "sick person",
-  "person with mental health condition",
-  "person with substance use disorder",
-];
-
-const secondSet = [
-  "immigrant",
-  "apolitical person",
-  "propaganda",
-  "people at protest",
-  "rich politician",
-  "poor politician",
-  "poor person",
-  "homeless person",
-  "unemployed person",
-  "influencer",
-  "artist",
-  "office worker",
-  "city",
-  "city celebration",
-  "city at war",
-  "person at war",
-  "woman at war",
-  "women military parade",
-  "tampon in blood",
-  "bullet in blood",
-  "elderly person",
-  "dying person",
+const words = [
+  "afterlife",
+  "religion",
+  "cemetery",
+  "funeral",
+  "death",
   "dying pet",
   "euthanasia",
-  "death",
-  "funeral",
-  "cemetery",
-  "religion",
-  "afterlife",
+  "dying person",
+  "elderly person",
+  "bullet in blood",
+  "tampon in blood",
+  "women military parade",
+  "woman at war",
+  "person at war",
+  "city at war",
+  "city celebration",
+  "city",
+  "office worker",
+  "artist",
+  "influencer",
+  "unemployed person",
+  "homeless person",
+  "poor person",
+  "poor politician",
+  "rich politician",
+  "people at protest",
+  "propaganda",
+  "apolitical person",
+  "immigrant",
+  "person with substance use disorder",
+  "person with mental health condition",
+  "sick person",
+  "healthy person",
+  "unsafe sex",
+  "sex",
+  "love between women",
+  "love between men",
+  "love",
+  "bullied teen",
+  "puberty",
+  "unintended child",
+  "birth",
+  "family at home",
+  "home",
+  "before life",
 ];
 
 function Text() {
-  const [currentSet, setCurrentSet] = useState(firstSet);
-  const [visibleWords, setVisibleWords] = useState([]);
-  const [index, setIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const [offset, setOffset] = useState(window.innerHeight);
+  const [currentAudioIndex, setCurrentAudioIndex] = useState(null);
+  const [cameraError, setCameraError] = useState(false);
   const audioRef = useRef(null);
-  const isFirstSet = currentSet === firstSet;
+  const videoRef = useRef(null);
+  const animationRef = useRef(null);
 
   useEffect(() => {
-    if (index < currentSet.length && !isPaused) {
-      const timer = setTimeout(() => {
-        setVisibleWords((prev) => [...prev, currentSet[index]]);
-        playAudio(index, isFirstSet);
-        setIndex(index + 1);
-      }, 1500);
-      return () => clearTimeout(timer);
-    } else if (index >= currentSet.length && isFirstSet) {
-      setTimeout(() => {
-        setCurrentSet(secondSet);
-        setIndex(0);
-        setVisibleWords([]);
-      }, 1500);
-    }
-  }, [index, currentSet, isPaused]);
+    audioRef.current = new Audio();
 
-  const playAudio = (idx, isFirstSet) => {
-    const audioIndex = isFirstSet ? idx + 1 : firstSet.length + idx + 1;
-    const audio = new Audio(
-      `${process.env.PUBLIC_URL}/audio/audio_${audioIndex
-        .toString()
-        .padStart(2, "0")}.mp3`
-    );
-    audioRef.current = audio;
-    audio.play();
-  };
+    audioRef.current.addEventListener("ended", () => {
+      console.log("Audio playback completed");
+    });
 
-  const handleSwitchSet = (setNumber) => {
-    setVisibleWords([]);
-    setIndex(0);
-    setCurrentSet(setNumber === 1 ? firstSet : secondSet);
-  };
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then((stream) => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      })
+      .catch((error) => {
+        console.error("Ошибка доступа к камере", error);
+        setCameraError(true);
+      });
 
-  const handlePauseResume = () => {
-    if (audioRef.current) {
-      if (audioRef.current.paused) {
-        audioRef.current.play();
-      } else {
-        audioRef.current.pause();
+    const animate = () => {
+      setOffset((prev) => prev - 0.3);
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
       }
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = "";
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const centerY = window.innerHeight / 2;
+    const stepHeight = 70;
+    const centerIndex = Math.floor((centerY - offset) / stepHeight);
+
+    if (
+      centerIndex !== currentAudioIndex &&
+      centerIndex >= 0 &&
+      centerIndex < words.length
+    ) {
+      setCurrentAudioIndex(centerIndex);
+      playAudio(centerIndex);
     }
-    setIsPaused((prev) => !prev);
+  }, [offset]);
+
+  const playAudio = (index) => {
+    if (!words[index] || !audioRef.current) return;
+
+    // Используем индекс напрямую для правильного порядка аудио
+    const audioSrc = `${process.env.PUBLIC_URL}/audio/audio_${(index + 1)
+      .toString()
+      .padStart(2, "0")}.mp3`; // Индексация начинается с 01
+
+    if (!audioRef.current.paused) {
+      audioRef.current.pause();
+    }
+
+    audioRef.current.src = audioSrc;
+    audioRef.current
+      .play()
+      .catch((e) => console.error("Ошибка воспроизведения", e));
   };
 
   return (
     <div className="text-container">
-      {/* <div className="controls">
-        <button onClick={() => handleSwitchSet(1)}>First Set</button>
-        <button onClick={() => handleSwitchSet(2)}>Second Set</button>
-        <button onClick={handlePauseResume}>
-          {isPaused ? "Resume" : "Pause"}
-        </button>
-      </div> */}
-      {visibleWords.map((word, idx) => (
-        <div
-          key={idx}
-          className="text-step"
-          style={{ marginLeft: `${idx * 20}px` }}
-        >
-          {word}
+      {cameraError && (
+        <div className="camera-error">
+          <span>Ошибка доступа к камере</span>
         </div>
-      ))}
+      )}
+
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        muted
+        className="video-bg"
+      ></video>
+
+      <div
+        className="text-wrapper"
+        style={{ transform: `translateY(${-offset}px)` }}
+      >
+        {words.map((word, idx) => (
+          <div key={idx} className="text-step">
+            {word}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

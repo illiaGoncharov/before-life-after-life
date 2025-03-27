@@ -1,5 +1,39 @@
+.text-container {
+  position: relative;
+  width: 100vw;
+  height: calc(100vh - 150px);
+  padding-top: 50px;
+  overflow: hidden;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-bg {
+  position: absolute;
+  left: 0;
+  z-index: 0;
+  width: calc(100vw - 40px);
+  object-fit: cover;
+}
+
+.text-wrapper {
+  position: absolute;
+  bottom: -100px; /* Стартовое положение за экраном */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 .text-step {
-  font-family: "Hershey-Noailles-Times";
+  font-family: "Hershey-Noailles-Times", serif;
   text-transform: uppercase;
-  font-size: 1.4rem;
+  font-size: 4.2rem;
+  font-weight: bold;
+  color: white;
+  margin: 0px 0;
+  text-align: center;
+  width: 90%;
 }

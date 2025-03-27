@@ -49,7 +49,10 @@ function App() {
 
   return (
     <div className="App">
-      <Header setCurrentComponent={setCurrentComponent} />
+      <Header
+        setCurrentComponent={setCurrentComponent}
+        currentComponent={currentComponent}
+      />
       {renderComponent}
       <Footer
         handleButtonClick={handleButtonClick}
