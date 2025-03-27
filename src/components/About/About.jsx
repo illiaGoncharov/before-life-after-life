@@ -74,6 +74,24 @@ function About() {
         _ <br />
         _ <br />
         _ <br />
+        {/* Thanks to: <br />
+        _ <br />
+        Thomas Livugu Ngolyo <br />
+        Daniel Hernandez Ferrer <br />
+        Brighton <br />
+        Antonica <br />
+        Fernando <br />
+        Ken ken <br />
+        bereket <br />
+        Zara <br />
+        Pat Springer <br />
+        trantuan <br />
+        Javier Rengel <br />
+        Ken ADAMU UWESU MBINDIMBI Franco Sherwin Ana Q. Isaiah owino Mara Sousa
+        Elonjustin254 Unju Knetts VINCENT MissKambua Sir. Stephen Kago Nikolina
+        Nuno Nascimento Alvin stephen gicheha Deva Steve the Builder Asia
+        Kryvenko ansahmbom Betrand loah Hazzin Manali Sammy Kigen Wickliffe
+        Nigel Vipul Nagaar bluei reza/smarmendem _ …and 22 anonymous contributor */}
         _ <br />
         _ <br />
         _ <br />

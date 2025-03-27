@@ -169,6 +169,8 @@
   border: none;
   text-transform: uppercase;
   cursor: pointer;
+  text-align: left;
+  margin-left: 70px;
 }
 
 .form-data-view-submit:hover {

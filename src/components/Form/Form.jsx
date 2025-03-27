@@ -136,13 +136,11 @@ function Form() {
             <div className="form-data-view">
               <form className="form-data-view-form" onSubmit={handleSubmit}>
                 <label>
-                  [2]
+                  [2]&nbsp;&nbsp;&nbsp;
                   <p>
                     Fill <span className="any">any</span> information you fill
-                    comfortable sharing.
-                    <br />
-                    Fields marked with * are required, and question 2.4 is
-                    highly encouraged.
+                    comfortable sharing. Fields marked with * are required, and
+                    question 2.4 is highly encouraged.
                   </p>
                 </label>
                 <label>
