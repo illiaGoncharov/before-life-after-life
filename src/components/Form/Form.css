@@ -108,6 +108,11 @@
   opacity: 0.4;
 }
 
+.form-upload-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .form-data-view {
   font-family: "Hershey-Noailles-Times";
   width: 25vw;

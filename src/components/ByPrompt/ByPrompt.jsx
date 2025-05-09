@@ -58,7 +58,7 @@ function ByPrompt() {
   }, [lastInteractionTime]);
 
   const nextGroup = () => {
-    setCurrentIndex((prev) => (prev + 1 < totalPrompts ? prev + 1 : prev));
+    setCurrentIndex((prev) => (prev + 1) % totalPrompts);
   };
 
   const prevGroup = () => {

@@ -1,61 +1,65 @@
-import React, { useState } from "react";
+import React, { useState, Suspense, lazy } from "react";
 import "./App.css";
 import Header from "./../../ui/header/Header";
 import Footer from "./../../ui/footer/Footer";
-import Gallery from "./../Gallery/Gallery";
-import Form from "./../Form/Form";
-import About from "./../About/About";
-import Text from "./../Text/Text";
-import ByPrompt from "./../ByPrompt/ByPrompt"; // Импортируем новый компонент
-import ByContributor from "./../ByContributor/ByContributor"; // Импортируем новый компонент
+
+// Ленивая загрузка компонентов для улучшения производительности
+const Gallery = lazy(() => import("./../Gallery/Gallery"));
+const Form = lazy(() => import("./../Form/Form"));
+const About = lazy(() => import("./../About/About"));
+const Text = lazy(() => import("./../Text/Text"));
+const ByPrompt = lazy(() => import("./../ByPrompt/ByPrompt"));
+const ByContributor = lazy(() => import("./../ByContributor/ByContributor"));
+
+// Определение типов компонентов
+const COMPONENTS = {
+  gallery: Gallery,
+  form: Form,
+  about: About,
+  text: Text,
+  byPrompt: ByPrompt,
+  byContributor: ByContributor
+};
 
 function App() {
   const [currentComponent, setCurrentComponent] = useState("gallery");
   const [activeButton, setActiveButton] = useState("gallery");
 
-  const handleButtonClick = (component) => {
-    setCurrentComponent(component);
-    if (component === "gallery") {
-      setActiveButton("gallery");
-    } else if (component === "byPrompt") {
-      setActiveButton("byPrompt");
-    } else if (component === "byContributor") {
-      setActiveButton("byContributor");
-    } else {
-      setActiveButton(component);
+  // Унифицированный обработчик переключения компонентов
+  const handleComponentChange = (componentName) => {
+    if (COMPONENTS[componentName]) {
+      setCurrentComponent(componentName);
+      setActiveButton(componentName);
     }
   };
 
-  let renderComponent;
-  switch (currentComponent) {
-    case "form":
-      renderComponent = <Form />;
-      break;
-    case "about":
-      renderComponent = <About />;
-      break;
-    case "text":
-      renderComponent = <Text />;
-      break;
-    case "byPrompt":
-      renderComponent = <ByPrompt />;
-      break;
-    case "byContributor":
-      renderComponent = <ByContributor />;
-      break;
-    default:
-      renderComponent = <Gallery />;
-  }
+  // Безопасный рендеринг компонента с резервным вариантом
+  const renderCurrentComponent = () => {
+    const Component = COMPONENTS[currentComponent] || Gallery;
+    const componentProps = currentComponent === 'gallery'
+      ? { onAllHidden: () => handleComponentChange('text') }
+      : {};
+    
+    return (
+      <Suspense fallback={
+        <div className="loading-screen">
+          loading...
+        </div>
+      }>
+        <Component {...componentProps} />
+      </Suspense>
+    );
+  };
 
   return (
     <div className="App">
       <Header
-        setCurrentComponent={setCurrentComponent}
+        setCurrentComponent={handleComponentChange}
         currentComponent={currentComponent}
       />
-      {renderComponent}
+      {renderCurrentComponent()}
       <Footer
-        handleButtonClick={handleButtonClick}
+        handleButtonClick={handleComponentChange}
         activeButton={activeButton}
       />
     </div>

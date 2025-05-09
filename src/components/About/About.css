@@ -5,7 +5,8 @@
 .about-container p {
   font-family: "Hershey-Noailles-Times";
   text-align: justify;
-  max-width: 60%;
+  width: 60%;
+  max-width: 1000px;
   margin-bottom: 20px;
   color: white;
   opacity: 0.8;
@@ -18,13 +19,13 @@
 
 .about-image {
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   height: auto;
 }
 
 .image-caption {
   font-style: italic;
   color: white;
-  opacity: 0.4 !important;
   width: 300px;
+  letter-spacing: 1.5px;
 }

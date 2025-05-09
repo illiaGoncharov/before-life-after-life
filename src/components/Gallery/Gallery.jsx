@@ -9,36 +9,34 @@ const images = imageFolders.flatMap((folder) =>
   })
 );
 
-const BATCH_SIZE = 10; // Загружаем по 10 изображений за раз
+const MAX_DELAY = 500; // Максимальная задержка появления изображения в мс (скорректировано для ускорения загрузки)
 
-export default function Gallery() {
+export default function Gallery({ onAllHidden }) {
   const [loadedImages, setLoadedImages] = useState([]);
   const [hiddenImages, setHiddenImages] = useState(new Set()); // Используем Set для хранения скрытых изображений
 
   useEffect(() => {
-    const preloadImages = async () => {
-      for (let i = 0; i < images.length; i += BATCH_SIZE) {
-        const batch = images.slice(i, i + BATCH_SIZE); // Берем текущую пачку изображений
-        const promises = batch.map((src) => {
-          const img = new Image();
-          img.src = src;
-          return img
-            .decode()
-            .then(() => src)
-            .catch((error) => {
-              console.error(`Error loading image: ${src}`, error);
-              return null;
-            });
-        });
-
-        const results = await Promise.all(promises);
-        const successfulImages = results.filter((src) => src); // Фильтруем успешно загруженные изображения
-        setLoadedImages((prev) => [...prev, ...successfulImages]);
-      }
-    };
-
-    preloadImages();
+    images.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => {
+        const delay = Math.random() * MAX_DELAY;
+        setTimeout(() => {
+          setLoadedImages((prev) => [...prev, src]);
+        }, delay);
+      };
+      img.onerror = (error) => {
+        console.error(`Error loading image: ${src}`, error);
+      };
+    });
   }, []);
+
+  // Если пользователь скрыл все изображения, переходим к следующему компоненту
+  useEffect(() => {
+    if (hiddenImages.size === images.length && onAllHidden) {
+      onAllHidden();
+    }
+  }, [hiddenImages, onAllHidden]);
 
   // Функция для скрытия изображения при наведении
   const handleMouseEnter = (src) => {
@@ -57,11 +55,10 @@ export default function Gallery() {
             onMouseEnter={() => handleMouseEnter(src)} // Обработчик наведения
           >
             <img
-              key={index}
-              src={loadedImages.includes(src) ? src : undefined}
+              src={src}
               alt={`Image ${index + 1}`}
               loading="lazy"
-              className={loadedImages.includes(src) ? "loaded" : "loading"}
+              className={loadedImages.includes(src) ? "loaded" : ""}
             />
           </div>
         ))}

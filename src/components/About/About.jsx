@@ -45,8 +45,9 @@ function About() {
           src={`${process.env.PUBLIC_URL}/images/about.jpg`}
         />
         <p className="image-caption">
-          5-channel video installation displayed on five screens, each mounted
-          on identical tripods
+          5-channel video installation <br /> 
+          displayed on five screens, each <br /> 
+          mounted on identical tripods
         </p>
       </div>
 
