@@ -1,0 +1,2 @@
+.gallery-container{align-items:center;display:flex;justify-content:center;margin:0 auto;width:calc(100vw - 40px)}.gallery{grid-gap:5px;box-sizing:border-box;display:grid;gap:5px;grid-template-columns:repeat(25,1fr);grid-template-rows:repeat(9,calc(11.11111vh - 16.66667px));height:inherit;width:100%}.gallery img{height:100%;object-fit:cover;opacity:0;transition:none;width:100%}.gallery img.loaded{opacity:1}.image-container.hidden img{cursor:pointer;opacity:0}.image-container.hidden{background-color:#000}
+/*# sourceMappingURL=884.f8870f6d.chunk.css.map*/
