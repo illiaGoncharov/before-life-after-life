@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/before-life-after-life/static/css/main.6ba88434.css",
-    "main.js": "/before-life-after-life/static/js/main.5b20b83b.js",
+    "main.css": "/before-life-after-life/static/css/main.9632b0db.css",
+    "main.js": "/before-life-after-life/static/js/main.2ee5d027.js",
     "static/css/884.f8870f6d.chunk.css": "/before-life-after-life/static/css/884.f8870f6d.chunk.css",
     "static/js/884.cb78a3ec.chunk.js": "/before-life-after-life/static/js/884.cb78a3ec.chunk.js",
     "static/css/98.a54badb4.chunk.css": "/before-life-after-life/static/css/98.a54badb4.chunk.css",
@@ -10,8 +10,8 @@
     "static/js/31.55a3cd0b.chunk.js": "/before-life-after-life/static/js/31.55a3cd0b.chunk.js",
     "static/css/42.3e571315.chunk.css": "/before-life-after-life/static/css/42.3e571315.chunk.css",
     "static/js/42.80840a51.chunk.js": "/before-life-after-life/static/js/42.80840a51.chunk.js",
-    "static/css/445.d2595fad.chunk.css": "/before-life-after-life/static/css/445.d2595fad.chunk.css",
-    "static/js/445.c7d02a01.chunk.js": "/before-life-after-life/static/js/445.c7d02a01.chunk.js",
+    "static/css/445.0c630548.chunk.css": "/before-life-after-life/static/css/445.0c630548.chunk.css",
+    "static/js/445.114533ba.chunk.js": "/before-life-after-life/static/js/445.114533ba.chunk.js",
     "static/css/313.1f023346.chunk.css": "/before-life-after-life/static/css/313.1f023346.chunk.css",
     "static/js/313.47752071.chunk.js": "/before-life-after-life/static/js/313.47752071.chunk.js",
     "static/js/453.942b8962.chunk.js": "/before-life-after-life/static/js/453.942b8962.chunk.js",
@@ -19,8 +19,8 @@
     "static/media/Hershey-Noailles-Times-Triplex-Italic-Regular.ttf": "/before-life-after-life/static/media/Hershey-Noailles-Times-Triplex-Italic-Regular.7c1fb5f64e7f827bac9e.ttf",
     "static/media/Hershey-Noailles-Futura-Triplex-Regular.ttf": "/before-life-after-life/static/media/Hershey-Noailles-Futura-Triplex-Regular.52026fac1c290753838d.ttf",
     "index.html": "/before-life-after-life/index.html",
-    "main.6ba88434.css.map": "/before-life-after-life/static/css/main.6ba88434.css.map",
-    "main.5b20b83b.js.map": "/before-life-after-life/static/js/main.5b20b83b.js.map",
+    "main.9632b0db.css.map": "/before-life-after-life/static/css/main.9632b0db.css.map",
+    "main.2ee5d027.js.map": "/before-life-after-life/static/js/main.2ee5d027.js.map",
     "884.f8870f6d.chunk.css.map": "/before-life-after-life/static/css/884.f8870f6d.chunk.css.map",
     "884.cb78a3ec.chunk.js.map": "/before-life-after-life/static/js/884.cb78a3ec.chunk.js.map",
     "98.a54badb4.chunk.css.map": "/before-life-after-life/static/css/98.a54badb4.chunk.css.map",
@@ -29,14 +29,14 @@
     "31.55a3cd0b.chunk.js.map": "/before-life-after-life/static/js/31.55a3cd0b.chunk.js.map",
     "42.3e571315.chunk.css.map": "/before-life-after-life/static/css/42.3e571315.chunk.css.map",
     "42.80840a51.chunk.js.map": "/before-life-after-life/static/js/42.80840a51.chunk.js.map",
-    "445.d2595fad.chunk.css.map": "/before-life-after-life/static/css/445.d2595fad.chunk.css.map",
-    "445.c7d02a01.chunk.js.map": "/before-life-after-life/static/js/445.c7d02a01.chunk.js.map",
+    "445.0c630548.chunk.css.map": "/before-life-after-life/static/css/445.0c630548.chunk.css.map",
+    "445.114533ba.chunk.js.map": "/before-life-after-life/static/js/445.114533ba.chunk.js.map",
     "313.1f023346.chunk.css.map": "/before-life-after-life/static/css/313.1f023346.chunk.css.map",
     "313.47752071.chunk.js.map": "/before-life-after-life/static/js/313.47752071.chunk.js.map",
     "453.942b8962.chunk.js.map": "/before-life-after-life/static/js/453.942b8962.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.6ba88434.css",
-    "static/js/main.5b20b83b.js"
+    "static/css/main.9632b0db.css",
+    "static/js/main.2ee5d027.js"
   ]
 }
