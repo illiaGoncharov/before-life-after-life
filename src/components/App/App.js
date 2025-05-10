@@ -24,6 +24,7 @@ const COMPONENTS = {
 function App() {
   const [currentComponent, setCurrentComponent] = useState("gallery");
   const [activeButton, setActiveButton] = useState("gallery");
+  const [formStep, setFormStep] = useState(1);
 
   // Унифицированный обработчик переключения компонентов
   const handleComponentChange = (componentName) => {
@@ -36,10 +37,16 @@ function App() {
   // Безопасный рендеринг компонента с резервным вариантом
   const renderCurrentComponent = () => {
     const Component = COMPONENTS[currentComponent] || Gallery;
-    const componentProps = currentComponent === 'gallery'
-      ? { onAllHidden: () => handleComponentChange('text') }
-      : {};
-    
+    // Props for lazy-loaded components
+    const componentProps = {};
+    if (currentComponent === 'gallery') {
+      componentProps.onAllHidden = () => handleComponentChange('text');
+    }
+    if (currentComponent === 'form') {
+      componentProps.onNavigate = handleComponentChange;
+      componentProps.onStepChange = setFormStep;
+    }
+
     return (
       <Suspense fallback={
         <div className="loading-screen">
@@ -58,9 +65,11 @@ function App() {
         currentComponent={currentComponent}
       />
       {renderCurrentComponent()}
+      {/* Footer shows toggles or form step indicator */}
       <Footer
         handleButtonClick={handleComponentChange}
         activeButton={activeButton}
+        formStep={formStep}
       />
     </div>
   );

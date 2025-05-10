@@ -1,11 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const Typewriter = ({ text = "", delayBeforeStart = 0, charInterval = 50, onComplete }) => {
+const Typewriter = ({ text = "", delayBeforeStart = 0, charInterval = 50, onComplete, instant = false }) => {
   const [displayedText, setDisplayedText] = useState("");
   const startTimeout = useRef(null);
   const intervalRef = useRef(null);
 
   useEffect(() => {
+    // If instant mode or not in production, show full text immediately
+    if (instant || process.env.NODE_ENV !== 'production') {
+      setDisplayedText(text);
+      if (onComplete) onComplete();
+      return;
+    }
+    // Otherwise, perform typewriter animation
     startTimeout.current = setTimeout(() => {
       let idx = 0;
       intervalRef.current = setInterval(() => {
@@ -22,7 +29,7 @@ const Typewriter = ({ text = "", delayBeforeStart = 0, charInterval = 50, onComp
       clearTimeout(startTimeout.current);
       clearInterval(intervalRef.current);
     };
-  }, [text, delayBeforeStart, charInterval, onComplete]);
+  }, [text, delayBeforeStart, charInterval, onComplete, instant]);
 
   return <p>{displayedText}</p>;
 };

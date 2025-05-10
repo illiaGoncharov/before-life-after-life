@@ -51,6 +51,7 @@ const words = [
 
 function Text() {
   const [offset, setOffset] = useState(window.innerHeight);
+  const SCROLL_SPEED = process.env.NODE_ENV !== 'production' ? 10 : 0.3;
   const [currentAudioIndex, setCurrentAudioIndex] = useState(null);
   const [cameraError, setCameraError] = useState(false);
   const audioRef = useRef(null);
@@ -77,7 +78,7 @@ function Text() {
       });
 
     const animate = () => {
-      setOffset((prev) => prev - 0.3);
+      setOffset((prev) => prev - SCROLL_SPEED);
       animationRef.current = requestAnimationFrame(animate);
     };
 

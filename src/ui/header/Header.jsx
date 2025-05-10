@@ -18,7 +18,7 @@ function Header({ setCurrentComponent, currentComponent }) {
         }`}
         onClick={() => setCurrentComponent("about")}
       >
-        After Life
+        Afterlife
       </button>
     </header>
   );
