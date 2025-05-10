@@ -1,6 +1,7 @@
 .header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding-top: 15px;
   padding-bottom: 5px;
   z-index: 2;
@@ -23,5 +24,28 @@
 }
 
 .header-button.active {
+  opacity: 0.8;
+}
+
+/* Progress ticks for ByPrompt in header as horizontal dashes */
+.header-progress-bar {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(45, 1fr);
+  column-gap: 4px;
+  margin: 0 10px;
+  height: 1px;
+  margin-top: -5px;
+}
+
+/* Vertical stick ticks */
+.header-progress-tick {
+  width: 100%;
+  height: 1px;
+  background-color: white;
+  opacity: 0.4;
+}
+
+.header-progress-tick.active {
   opacity: 0.8;
 }

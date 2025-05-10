@@ -24,6 +24,7 @@ const COMPONENTS = {
 function App() {
   const [currentComponent, setCurrentComponent] = useState("gallery");
   const [activeButton, setActiveButton] = useState("gallery");
+  const [promptIndex, setPromptIndex] = useState(0);
   const [formStep, setFormStep] = useState(1);
 
   // Унифицированный обработчик переключения компонентов
@@ -46,6 +47,9 @@ function App() {
       componentProps.onNavigate = handleComponentChange;
       componentProps.onStepChange = setFormStep;
     }
+    if (currentComponent === 'byPrompt') {
+      componentProps.onPromptChange = setPromptIndex;
+    }
 
     return (
       <Suspense fallback={
@@ -63,6 +67,7 @@ function App() {
       <Header
         setCurrentComponent={handleComponentChange}
         currentComponent={currentComponent}
+        promptIndex={currentComponent === 'byPrompt' ? promptIndex : undefined}
       />
       {renderCurrentComponent()}
       {/* Footer shows toggles or form step indicator */}

@@ -5,7 +5,7 @@ const contributors = ["andrey", "anna", "clara", "dexter", "jeff"];
 const totalPrompts = 45;
 const imagesPerPage = 5;
 
-function ByPrompt() {
+function ByPrompt({ onPromptChange }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loadingParts, setLoadingParts] = useState(
     Array(totalPrompts).fill(false)
@@ -45,24 +45,29 @@ function ByPrompt() {
     };
   }, [currentIndex]);
 
+  // Auto-rotate: pause for 3 seconds after last interaction before moving
   useEffect(() => {
-    // Функция для автоматического перехода вправо через 5 секунды без взаимодействия
-    const autoMoveTimeout = setInterval(() => {
-      if (Date.now() - lastInteractionTime >= 5000) {
-        nextGroup();
-      }
-    }, 5000);
-
-    // Убираем таймер при размонтировании
-    return () => clearInterval(autoMoveTimeout);
+    const timer = setTimeout(() => {
+      nextGroup();
+    }, 3000);
+    return () => clearTimeout(timer);
   }, [lastInteractionTime]);
+
+  // Notify parent about prompt index changes for header indicator
+  useEffect(() => {
+    if (typeof onPromptChange === 'function') {
+      onPromptChange(currentIndex);
+    }
+  }, [currentIndex, onPromptChange]);
 
   const nextGroup = () => {
     setCurrentIndex((prev) => (prev + 1) % totalPrompts);
+    setLastInteractionTime(Date.now());
   };
 
   const prevGroup = () => {
     setCurrentIndex((prev) => (prev - 1 >= 0 ? prev - 1 : prev));
+    setLastInteractionTime(Date.now());
   };
 
   return (
