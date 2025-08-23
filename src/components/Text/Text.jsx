@@ -1,156 +1,326 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Text.css";
+import { prompts } from "../../data/prompts";
 
-const words = [
-  "afterlife",
-  "religion",
-  "cemetery",
-  "funeral",
-  "death",
-  "dying pet",
-  "euthanasia",
-  "dying person",
-  "elderly person",
-  "bullet in blood",
-  "tampon in blood",
-  "women military parade",
-  "woman at war",
-  "person at war",
-  "city at war",
-  "city celebration",
-  "city",
-  "office worker",
-  "artist",
-  "influencer",
-  "unemployed person",
-  "homeless person",
-  "poor person",
-  "poor politician",
-  "rich politician",
-  "people at protest",
-  "propaganda",
-  "apolitical person",
-  "immigrant",
-  "person with substance use disorder",
-  "person with mental health condition",
-  "sick person",
-  "healthy person",
-  "unsafe sex",
-  "sex",
-  "love between women",
-  "love between men",
-  "love",
-  "bullied teen",
-  "puberty",
-  "unintended child",
-  "birth",
-  "family at home",
-  "home",
-  "before life",
-];
+// Define a direct mapping from prompt text to audio number
+const AUDIO_MAPPING = {
+  "before life": 1,
+  "home": 2,
+  "family at home": 3,
+  "birth": 4,
+  "unintended child": 5,
+  "puberty": 6,
+  "bullied teen": 7,
+  "love": 8,
+  "love between men": 9,
+  "love between women": 10,
+  "sex": 11,
+  "unsafe sex": 12,
+  "healthy person": 13,
+  "sick person": 14,
+  "person with mental health condition": 15,
+  "person with substance use disorder": 16,
+  "immigrant": 17,
+  "apolitical person": 18,
+  "propaganda": 19,
+  "people at protest": 20,
+  "rich politician": 21,
+  "poor politician": 22,
+  "poor person": 23,
+  "homeless person": 24,
+  "unemployed person": 25,
+  "influencer": 26,
+  "artist": 27,
+  "office worker": 28,
+  "city": 29,
+  "city celebration": 30,
+  "city at war": 31,
+  "person at war": 32,
+  "woman at war": 33,
+  "women military parade": 34,
+  "tampon in blood": 35,
+  "bullet in blood": 36,
+  "elderly person": 37,
+  "dying person": 38,
+  "euthanasia": 39,
+  "dying pet": 40,
+  "death": 41,
+  "funeral": 42,
+  "cemetery": 43,
+  "religion": 44,
+  "afterlife": 45
+};
 
 function Text() {
   const [offset, setOffset] = useState(window.innerHeight);
-  const SCROLL_SPEED = process.env.NODE_ENV !== 'production' ? 10 : 0.3;
-  const [currentAudioIndex, setCurrentAudioIndex] = useState(null);
-  const [cameraError, setCameraError] = useState(false);
+  const SCROLL_SPEED = 0.3;
+  const [currentPromptInCenter, setCurrentPromptInCenter] = useState(null);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [audioDisabled, setAudioDisabled] = useState(false);
   const audioRef = useRef(null);
   const videoRef = useRef(null);
   const animationRef = useRef(null);
+  const textWrapperRef = useRef(null);
+  const audioErrorCount = useRef(0);
 
+  // Start scrolling immediately after brief loading
   useEffect(() => {
-    audioRef.current = new Audio();
+    const fastStartTimer = setTimeout(() => {
+      setIsLoading(false);
+      setIsInitialized(true);
+    }, 2000);
+    
+    return () => clearTimeout(fastStartTimer);
+  }, []);
 
-    audioRef.current.addEventListener("ended", () => {
-      console.log("Audio playback completed");
-    });
-
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then((stream) => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-      })
-      .catch((error) => {
-        console.error("Ошибка доступа к камере", error);
-        setCameraError(true);
-      });
-
-    const animate = () => {
-      setOffset((prev) => prev - SCROLL_SPEED);
-      animationRef.current = requestAnimationFrame(animate);
+  // Инициализация камеры
+  useEffect(() => {
+    const constraints = {
+      video: { 
+        facingMode: 'user',
+        width: window.innerWidth,
+        height: window.innerHeight
+      }
     };
 
-    animationRef.current = requestAnimationFrame(animate);
+    // Функция для запуска камеры
+    // Выношу в отдельную функцию, чтобы можно было перезапускать
+    const startCamera = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        
+        if (videoRef.current) {
+          // Подключаем поток к видео элементу
+          videoRef.current.srcObject = stream;
+          
+          // Важно! Нужно дождаться, пока видео будет готово к воспроизведению
+          videoRef.current.onloadedmetadata = () => {
+            // Теперь можно запускать воспроизведение
+            videoRef.current.play()
+              .catch(e => console.error('Ошибка воспроизведения:', e));
+          };
 
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
+          // Если видео остановилось, пытаемся перезапустить
+          videoRef.current.onpause = () => {
+            console.log('Видео на паузе, перезапускаем...');
+            videoRef.current.play()
+              .catch(e => console.error('Ошибка перезапуска:', e));
+          };
+        }
+      } catch (err) {
+        console.error('Ошибка запуска камеры:', err);
       }
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.src = "";
+    };
+
+    // Запускаем камеру
+    startCamera();
+
+    // Следим за видимостью страницы
+    // Возможно камера выключается, когда страница становится неактивной
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        console.log('Страница стала видимой, перезапускаем камеру...');
+        startCamera();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // При размонтировании компонента
+    return () => {
+      // Убираем слежение за видимостью
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      
+      // Останавливаем все треки камеры
+      if (videoRef.current && videoRef.current.srcObject) {
+        const tracks = videoRef.current.srcObject.getTracks();
+        tracks.forEach(track => {
+          console.log('Останавливаем трек камеры:', track.label);
+          track.stop();
+        });
       }
     };
   }, []);
 
+  // Initialize audio
   useEffect(() => {
-    const centerY = window.innerHeight / 2;
-    const stepHeight = 70;
-    const centerIndex = Math.floor((centerY - offset) / stepHeight);
-
-    if (
-      centerIndex !== currentAudioIndex &&
-      centerIndex >= 0 &&
-      centerIndex < words.length
-    ) {
-      setCurrentAudioIndex(centerIndex);
-      playAudio(centerIndex);
+    try {
+      audioRef.current = new Audio();
+      
+      const handleAudioEnded = () => {
+        setIsAudioPlaying(false);
+      };
+      
+      audioRef.current.addEventListener('ended', handleAudioEnded);
+      
+      const handleAudioError = (e) => {
+        console.error("Audio error:", e);
+        audioErrorCount.current += 1;
+        
+        if (audioErrorCount.current >= 3) {
+          setAudioDisabled(true);
+        }
+        
+        setIsAudioPlaying(false);
+      };
+      
+      audioRef.current.addEventListener('error', handleAudioError);
+      
+      return () => {
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current.removeEventListener('ended', handleAudioEnded);
+          audioRef.current.removeEventListener('error', handleAudioError);
+        }
+      };
+    } catch (error) {
+      console.error("Audio initialization error:", error);
+      setAudioDisabled(true);
+      return () => {};
     }
-  }, [offset]);
+  }, []);
 
-  const playAudio = (index) => {
-    if (!words[index] || !audioRef.current) return;
+  // Set up animation and center detection
+  useEffect(() => {
+    if (!isInitialized) return;
+    
+    const checkCenterPrompt = () => {
+      if (isAudioPlaying || audioDisabled) return;
 
-    // Используем индекс напрямую для правильного порядка аудио
-    const audioSrc = `${process.env.PUBLIC_URL}/audio/audio_${(index + 1)
-      .toString()
-      .padStart(2, "0")}.mp3`; // Индексация начинается с 01
+      try {
+        const windowCenter = window.innerHeight / 2;
+        const textSteps = document.querySelectorAll('.text-step');
+        if (!textSteps || !textSteps.length) return;
+        
+        let closestToCenter = null;
+        let smallestDistance = Infinity;
+        
+        textSteps.forEach((step) => {
+          try {
+            const rect = step.getBoundingClientRect();
+            const stepCenter = rect.top + rect.height / 2;
+            const distance = Math.abs(stepCenter - windowCenter);
+            
+            if (distance < smallestDistance) {
+              smallestDistance = distance;
+              closestToCenter = step;
+            }
+          } catch (error) {
+            // Silent catch for any getBoundingClientRect errors
+          }
+        });
+        
+        if (closestToCenter && smallestDistance < 50) {
+          const promptInCenter = closestToCenter.textContent;
+          
+          if (promptInCenter && promptInCenter !== currentPromptInCenter) {
+            setCurrentPromptInCenter(promptInCenter);
+            
+            if (!audioDisabled) {
+              const audioNumber = AUDIO_MAPPING[promptInCenter];
+              if (audioNumber) {
+                playAudio(audioNumber);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error in checkCenterPrompt:", error);
+      }
+    };
+    
+    const animate = () => {
+      try {
+        setOffset((prev) => prev - SCROLL_SPEED);
+        
+        if (!audioDisabled) {
+          checkCenterPrompt();
+        }
+        
+        animationRef.current = requestAnimationFrame(animate);
+      } catch (error) {
+        console.error("Animation error:", error);
+        animationRef.current = requestAnimationFrame(animate);
+      }
+    };
+    
+    animationRef.current = requestAnimationFrame(animate);
+    
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [currentPromptInCenter, isAudioPlaying, isInitialized, audioDisabled]);
 
-    if (!audioRef.current.paused) {
-      audioRef.current.pause();
+  const playAudio = (audioNumber) => {
+    if (!audioRef.current || audioDisabled) return;
+
+    try {
+      setIsAudioPlaying(true);
+
+      const audioSrc = `${process.env.PUBLIC_URL}/audio/audio_${
+        String(audioNumber).padStart(2, "0")
+      }.mp3`;
+
+      if (!audioRef.current.paused) audioRef.current.pause();
+      audioRef.current.src = audioSrc;
+      
+      const safetyTimeout = setTimeout(() => {
+        setIsAudioPlaying(false);
+      }, 10000);
+      
+      audioRef.current.play()
+        .then(() => {
+          clearTimeout(safetyTimeout);
+        })
+        .catch((error) => {
+          console.error("Audio playback error:", error);
+          clearTimeout(safetyTimeout);
+          setIsAudioPlaying(false);
+          
+          audioErrorCount.current += 1;
+          if (audioErrorCount.current >= 3) {
+            setAudioDisabled(true);
+          }
+        });
+    } catch (error) {
+      console.error("Error playing audio:", error);
+      setIsAudioPlaying(false);
     }
-
-    audioRef.current.src = audioSrc;
-    audioRef.current
-      .play()
-      .catch((e) => console.error("Ошибка воспроизведения", e));
   };
+
+  if (isLoading) {
+    return (
+      <div className="text-container loading">
+        <div className="loading-message">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="text-container">
-      {cameraError && (
-        <div className="camera-error">
-          <span>Ошибка доступа к камере</span>
-        </div>
-      )}
-
       <video
         ref={videoRef}
         autoPlay
         playsInline
         muted
         className="video-bg"
-      ></video>
+      />
 
       <div
+        ref={textWrapperRef}
         className="text-wrapper"
         style={{ transform: `translateY(${-offset}px)` }}
       >
-        {words.map((word, idx) => (
-          <div key={idx} className="text-step">
-            {word}
+        {prompts.map((prompt, idx) => (
+          <div 
+            key={idx} 
+            className="text-step"
+          >
+            {prompt}
           </div>
         ))}
       </div>

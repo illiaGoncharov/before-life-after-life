@@ -1,0 +1,33 @@
+.typewriter-text {
+  margin: 0;
+  padding: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  opacity: 0.8;
+  transition: opacity 0.2s ease-in-out;
+  color: white;
+  font-family: "Hershey-Noailles-Times", serif;
+  display: inline-block;
+}
+
+.typewriter-text.typing {
+  opacity: 1;
+}
+
+.typewriter-text:empty {
+  opacity: 0;
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  margin-left: 2px;
+  animation: blink 0.7s infinite;
+  color: white;
+  opacity: 0.8;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+} 

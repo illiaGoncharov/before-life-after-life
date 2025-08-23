@@ -1,7 +1,22 @@
 import React from "react";
 import "./Footer.css";
+import { prompts } from "../../data/prompts";
 
-function Footer({ handleButtonClick, activeButton, formStep }) {
+function Footer({
+  handleButtonClick,
+  activeButton,
+  formStep,
+  promptIndex,
+  soundOn,
+  isPaused,
+  togglePause,
+  toggleSound,
+  prevPrompt,
+  nextPrompt,
+  selectedContributorIndex,
+  onSelectContributor,
+  contributors,
+}) {
   return (
     <header className="footer">
       <div className="footer-main-toggler">
@@ -67,6 +82,54 @@ function Footer({ handleButtonClick, activeButton, formStep }) {
           >
             By Contributor
           </button>
+        </div>
+      )}
+      {/* Now Playing and playback controls for ByPrompt */}
+      {activeButton === "byPrompt" && (
+        <div className="footer-playback">
+          <span className="footer-now-playing">
+            NOW PLAYING: {prompts[prompts.length - 1 - promptIndex]}
+          </span>
+          <button
+            className="footer-sound-toggle"
+            onClick={toggleSound}
+          >
+            SOUND: {soundOn ? "ON" : "OFF"}
+          </button>
+          <button
+            className="footer-ctrl-button"
+            onClick={prevPrompt}
+          >
+            &lt;
+          </button>
+          <button
+            className="footer-ctrl-button"
+            onClick={togglePause}
+          >
+            {isPaused ? "PLAY" : "PAUSE"}
+          </button>
+          <button
+            className="footer-ctrl-button"
+            onClick={nextPrompt}
+          >
+            &gt;
+          </button>
+        </div>
+      )}
+      {/* Contributor navigation buttons in footer */}
+      {activeButton === "byContributor" && contributors && (
+        <div className="footer-contributor-nav">
+          {contributors.map((_, idx) => (
+            <React.Fragment key={idx}>
+              <button
+                className={`footer-button ${idx === selectedContributorIndex ? 'active' : ''}`}
+                onClick={() => onSelectContributor(idx)}
+              >
+                {idx + 1}
+              </button>
+              {idx < contributors.length - 1 && <span>|</span>}
+            </React.Fragment>
+          ))}
         </div>
       )}
     </header>

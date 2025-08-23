@@ -17,17 +17,23 @@
   width: 100vw;
   height: 100vh;
   object-fit: cover;
-  z-index: 0;
+  transform: scaleX(-1);
+}
+
+.video-bg.hidden {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .text-wrapper {
   position: fixed;
-  bottom: -100px; /* Стартовое положение за экраном */
+  bottom: -100px;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   z-index: 1;
+  pointer-events: none;
 }
 
 .text-step {
@@ -39,4 +45,40 @@
   margin: 0px 0;
   text-align: center;
   width: 90%;
+  mix-blend-mode: difference;
+}
+
+.camera-error {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 0.95em;
+  z-index: 1000;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.loading-message {
+  color: white;
+  font-size: 1.2em;
+  opacity: 0.8;
 }

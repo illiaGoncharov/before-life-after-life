@@ -1,15 +1,14 @@
 import React, { useState } from "react";
+import { contributors } from "../../data/contributors";
 import "./ByContributor.css";
 import ImageModal from "../ImageModal/ImageModal";
 
-const contributors = ["andrey", "anna", "clara", "dexter", "jeff"];
 const totalPrompts = 45;
 
-function ByContributor() {
-  const [selectedContributor, setSelectedContributor] = useState("andrey");
+function ByContributor({ selectedContributorIndex, onSelectContributor }) {
   const [modalIndex, setModalIndex] = useState(null);
 
-  // Собираем URLs изображений текущего участника
+  const selectedContributor = contributors[selectedContributorIndex];
   const contributorImages = Array.from({ length: totalPrompts }, (_, i) =>
     `${process.env.PUBLIC_URL}/images/${selectedContributor}/${selectedContributor}_${String(
       i + 1
@@ -36,18 +35,7 @@ function ByContributor() {
           />
         ))}
       </div>
-      <div className="contributor-navigation">
-        {contributors.map((contributor, index) => (
-          <button
-            key={contributor}
-            onClick={() => setSelectedContributor(contributor)}
-            className={selectedContributor === contributor ? "active" : ""}
-          >
-            {/* {contributor} */}
-            {index + 1} {index < contributors.length - 1 && "|"}
-          </button>
-        ))}
-      </div>
+      {/* Removed component-level navigation; footer provides controls now */}
       {modalIndex !== null && (
         <ImageModal
           images={contributorImages}

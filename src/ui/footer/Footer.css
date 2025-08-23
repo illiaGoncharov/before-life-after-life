@@ -6,7 +6,8 @@
   right: 0;
   width: calc(100vw - 40px);
   display: flex;
-  /* justify-content: space-between; */
+  justify-content: flex-start;
+  gap: 20px;
   padding-top: 5px;
   padding-bottom: 15px;
   z-index: 2;
@@ -38,7 +39,7 @@
 }
 
 .footer-filter {
-  margin-left: 205px;
+  margin-left: 0;
   display: flex;
   flex-direction: row;
   gap: 5px;
@@ -54,4 +55,50 @@
   background-color: transparent;
   border: none;
   color: white;
+}
+
+/* Playback controls for ByPrompt mode */
+.footer-playback {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.footer-now-playing {
+  font-size: 0.85rem;
+  color: white;
+  opacity: 0.4;
+  text-transform: uppercase;
+  background: transparent;
+  border: none;
+}
+
+.footer-sound-toggle,
+.footer-ctrl-button {
+  font-size: 0.85rem;
+  color: white;
+  opacity: 0.4;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.footer-sound-toggle:hover,
+.footer-ctrl-button:hover {
+  opacity: 0.3;
+}
+
+.footer-contributor-nav {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.footer-contributor-nav .footer-button {
+  opacity: 0.4;
+}
+
+.footer-contributor-nav .footer-button.active {
+  opacity: 0.8;
 }
