@@ -52,7 +52,7 @@ function ByPrompt({ promptIndex, prevPrompt, nextPrompt, setLastInteractionTime 
                 process.env.PUBLIC_URL
               }/images/${contributor}/${contributor}_${String(
                 imageNumber
-              ).padStart(2, "0")}.png`}
+              ).padStart(2, "0")}.jpg`}
               alt={`${contributor} ${imageNumber}`}
               className="image-byprompt-item"
             />

@@ -12,7 +12,7 @@ function ByContributor({ selectedContributorIndex, onSelectContributor }) {
   const contributorImages = Array.from({ length: totalPrompts }, (_, i) =>
     `${process.env.PUBLIC_URL}/images/${selectedContributor}/${selectedContributor}_${String(
       i + 1
-    ).padStart(2, "0")}.png`
+    ).padStart(2, "0")}.jpg`
   );
 
   const handleImageClick = (index) => setModalIndex(index);
