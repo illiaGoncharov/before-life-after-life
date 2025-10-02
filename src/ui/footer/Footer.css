@@ -13,6 +13,13 @@
   z-index: 2;
 }
 
+/* Отображаем только активную секцию; скрытые не влияют на раскладку */
+.footer-section:not([data-visible="true"]) { display: none; }
+.footer-section[data-visible="true"] { display: flex; }
+
+/* Базовая строка IMAGES: ALL */
+.footer-base { gap: 5px; align-items: baseline; }
+
 .footer span {
   opacity: 0.4;
   color: white;
@@ -21,22 +28,55 @@
 .footer-button {
   font-family: "Hershey-Noailles-Futura-Triplex-Regular";
   font-size: 0.85rem;
-  padding: 0;
+  line-height: 1;
+  letter-spacing: normal;
+  display: inline-block;
+  vertical-align: baseline;
   cursor: pointer;
   opacity: 0.4;
   text-transform: uppercase;
   background-color: transparent;
   border: none;
   color: white;
+  padding: 0;
+  position: relative; /* всегда relative, чтобы не было сдвига при появлении подчёркивания */
 }
 
-.footer-button:hover {
-  opacity: 0.3;
-}
+.footer-button:hover,
+.footer-button:focus,
+.footer-button:active { opacity: 0.4; }
 
-.footer-button.active {
-  opacity: 0.8;
+.footer-button.active { opacity: 0.8; }
+
+/* Подчеркивание: тонкая линия, не влияет на раскладку */
+.footer-button::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px; /* ближе к тексту */
+  height: 1px; /* тоньше линия */
+  background: white;
+  opacity: 0; /* скрыта по умолчанию, чтобы не менять метрики */
+  pointer-events: none;
 }
+.footer-button.active::after { opacity: 1; }
+
+/* Кнопка-лейбл "IMAGES:" в базе */
+.footer-label-button {
+  font-family: "Hershey-Noailles-Futura-Triplex-Regular";
+  font-size: 0.85rem;
+  line-height: 1;
+  letter-spacing: normal;
+  cursor: default;
+  opacity: 0.4;
+  text-transform: uppercase;
+  background-color: transparent;
+  border: none;
+  color: white;
+  padding: 0;
+}
+.footer-label-button:focus { outline: none; }
 
 .footer-filter {
   margin-left: 0;
@@ -46,15 +86,25 @@
   align-items: baseline;
 }
 
+/* Отступы между IMAGES | TEXT */
+.footer-main-toggler {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
 .footer-filter-label {
   font-family: "Hershey-Noailles-Futura-Triplex-Regular";
   font-size: 0.85rem;
-  padding: 0;
+  line-height: 1;
+  letter-spacing: normal;
+  cursor: default;
   opacity: 0.4;
   text-transform: uppercase;
   background-color: transparent;
   border: none;
   color: white;
+  padding: 0;
 }
 
 /* Playback controls for ByPrompt mode */

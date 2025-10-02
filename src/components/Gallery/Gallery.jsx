@@ -4,7 +4,7 @@ import "./Gallery.css";
 const imageFolders = ["andrey", "anna", "clara", "dexter", "jeff"];
 const images = imageFolders.flatMap((folder) =>
   Array.from({ length: 45 }, (_, i) => {
-    const fileName = `${folder}_${String(i + 1).padStart(2, "0")}.png`;
+    const fileName = `${folder}_${String(i + 1).padStart(2, "0")}.jpg`;
     return `${process.env.PUBLIC_URL}/images/${folder}/${fileName}`;
   })
 );
