@@ -36,3 +36,74 @@
 .image-container.hidden {
   background-color: black; /* Черный фон */
 }
+
+/* Мобильная версия галереи */
+.gallery-mobile {
+  flex-direction: column;
+  min-height: calc(100vh - 140px);
+  padding: 0;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+.gallery-mobile-image-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0; /* Убираем паддинг у изображения */
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gallery-mobile-image {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain; /* Сохраняем пропорции фотографии */
+  opacity: 0;
+  animation: fadeInImage 0.5s ease-in forwards;
+  display: block;
+  /* Портретная ориентация - фотография естественно выше чем шире */
+}
+
+@keyframes fadeInImage {
+  to {
+    opacity: 1;
+  }
+}
+
+.gallery-mobile-symbols {
+  display: flex;
+  flex-wrap: nowrap; /* Символы в одну линию без переноса */
+  justify-content: center;
+  align-items: center;
+  padding: 30px 0 20px; /* Отступ сверху от фотографии, без боковых */
+  gap: 2px; /* Минимальный gap между символами */
+  overflow-x: hidden; /* Предотвращаем горизонтальный скролл */
+  width: 25%; /* 1/4 экрана в ширину */
+  margin: 0 auto; /* Центрирование */
+  box-sizing: border-box;
+}
+
+.gallery-mobile-symbol {
+  font-size: 1rem;
+  font-family: "Hershey-Noailles-Times";
+  color: white;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  display: inline-block;
+  white-space: nowrap; /* Не переносим символы */
+  line-height: 1;
+}
+
+/* Медиа-запросы для адаптации десктоп версии */
+@media (max-width: 768px) {
+  .gallery {
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(20, auto);
+    gap: 3px;
+  }
+}

@@ -98,15 +98,19 @@ function Text() {
           // Важно! Нужно дождаться, пока видео будет готово к воспроизведению
           videoRef.current.onloadedmetadata = () => {
             // Теперь можно запускать воспроизведение
-            videoRef.current.play()
-              .catch(e => console.error('Ошибка воспроизведения:', e));
+            if (videoRef.current) {
+              videoRef.current.play()
+                .catch(e => console.error('Ошибка воспроизведения:', e));
+            }
           };
 
           // Если видео остановилось, пытаемся перезапустить
           videoRef.current.onpause = () => {
             console.log('Видео на паузе, перезапускаем...');
-            videoRef.current.play()
-              .catch(e => console.error('Ошибка перезапуска:', e));
+            if (videoRef.current) {
+              videoRef.current.play()
+                .catch(e => console.error('Ошибка перезапуска:', e));
+            }
           };
         }
       } catch (err) {
@@ -313,7 +317,7 @@ function Text() {
       <div
         ref={textWrapperRef}
         className="text-wrapper"
-        style={{ transform: `translateY(${-offset}px)` }}
+        style={{ transform: `translateX(-50%) translateY(${-offset}px)` }}
       >
         {prompts.map((prompt, idx) => (
           <div 

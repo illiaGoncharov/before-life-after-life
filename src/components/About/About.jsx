@@ -1,7 +1,25 @@
-import React from "react";
-import "./About.css"; // Можно добавить стили в отдельный файл
+import React, { useState } from "react";
+import "./About.css";
+import Loader from "../Loader/Loader";
 
 function About() {
+  const [loaderComplete, setLoaderComplete] = useState(false);
+
+  const handleLoaderComplete = () => {
+    setLoaderComplete(true);
+  };
+
+  // Если loader не завершен, показываем loader
+  if (!loaderComplete) {
+    return (
+      <Loader 
+        text="after life" 
+        onComplete={handleLoaderComplete}
+        charInterval={50}
+      />
+    );
+  }
+
   return (
     <div className="about-container">
       <p>

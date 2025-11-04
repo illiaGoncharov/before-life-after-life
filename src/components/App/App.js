@@ -12,6 +12,7 @@ const About = lazy(() => import("./../About/About"));
 const Text = lazy(() => import("./../Text/Text"));
 const ByPrompt = lazy(() => import("./../ByPrompt/ByPrompt"));
 const ByContributor = lazy(() => import("./../ByContributor/ByContributor"));
+const Card = lazy(() => import("./../Card/Card"));
 
 // Определение типов компонентов
 const COMPONENTS = {
@@ -20,7 +21,8 @@ const COMPONENTS = {
   about: About,
   text: Text,
   byPrompt: ByPrompt,
-  byContributor: ByContributor
+  byContributor: ByContributor,
+  card: Card
 };
 
 function App() {
@@ -34,6 +36,8 @@ function App() {
   const [formStep, setFormStep] = useState(1);
   // ByContributor state
   const [selectedContributorIndex, setSelectedContributorIndex] = useState(0);
+  // Флаг для отслеживания пользовательского взаимодействия для автозапуска аудио
+  const hasUserInteractedRef = useRef(false);
 
   // Унифицированный обработчик переключения компонентов
   const handleComponentChange = (componentName) => {
@@ -43,12 +47,32 @@ function App() {
     }
   };
 
+  // Отслеживание пользовательского взаимодействия
+  useEffect(() => {
+    const handleUserInteraction = () => {
+      hasUserInteractedRef.current = true;
+    };
+
+    // Отслеживаем различные типы взаимодействий
+    document.addEventListener('click', handleUserInteraction, { once: true });
+    document.addEventListener('keydown', handleUserInteraction, { once: true });
+    document.addEventListener('touchstart', handleUserInteraction, { once: true });
+
+    return () => {
+      document.removeEventListener('click', handleUserInteraction);
+      document.removeEventListener('keydown', handleUserInteraction);
+      document.removeEventListener('touchstart', handleUserInteraction);
+    };
+  }, []);
+
   // Handlers for prompt navigation
   const prevPrompt = () => {
+    hasUserInteractedRef.current = true;
     setPromptIndex((prev) => (prev - 1 >= 0 ? prev - 1 : prev));
     setLastInteractionTime(Date.now());
   };
   const nextPrompt = () => {
+    hasUserInteractedRef.current = true;
     setPromptIndex((prev) => (prev + 1) % prompts.length);
     setLastInteractionTime(Date.now());
   };
@@ -59,13 +83,24 @@ function App() {
       audioRef.current.pause();
       return;
     }
+    
+    // Воспроизводим аудио только после пользовательского взаимодействия
+    if (!hasUserInteractedRef.current) {
+      return;
+    }
+    
     const audioSrc = `${process.env.PUBLIC_URL}/audio/audio_${String(
       promptIndex + 1
     ).padStart(2, "0")}.mp3`;
     audioRef.current.src = audioSrc;
     audioRef.current
       .play()
-      .catch((e) => console.error("Ошибка воспроизведения BYPROMPT", e));
+      .catch((e) => {
+        // Тихо обрабатываем ошибку, если пользователь еще не взаимодействовал
+        if (e.name !== 'NotAllowedError') {
+          console.error("Ошибка воспроизведения BYPROMPT", e);
+        }
+      });
   }, [promptIndex, soundOn]);
 
   // Auto-rotate prompts with 3s pause after interactions
@@ -104,6 +139,9 @@ function App() {
       componentProps.selectedContributorIndex = selectedContributorIndex;
       componentProps.onSelectContributor = setSelectedContributorIndex;
       componentProps.contributors = contributors;
+    }
+    if (currentComponent === 'card') {
+      componentProps.onNavigate = handleComponentChange;
     }
 
     return (

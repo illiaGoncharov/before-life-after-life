@@ -29,3 +29,34 @@
   width: 300px;
   letter-spacing: 1.5px;
 }
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+  .about-container {
+    padding: 20px;
+  }
+
+  .about-container p {
+    width: 100%;
+    max-width: 100%;
+    font-size: 0.9em;
+    line-height: 1.5;
+  }
+
+  .about-image-container {
+    margin-left: 0;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .about-image {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .image-caption {
+    width: 100%;
+    margin-top: 10px;
+    font-size: 0.85em;
+  }
+}
