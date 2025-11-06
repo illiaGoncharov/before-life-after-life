@@ -87,6 +87,16 @@ npm run build
 npm run deploy
 ```
 
+## Деплой
+
+Проект настроен на автоматический деплой через GitHub Actions. При каждом пуше в ветку `main` сайт автоматически собирается и деплоится.
+
+**Важно:** Перед первым деплоем нужно:
+1. Включить GitHub Pages в настройках репозитория (`Settings` → `Pages` → `Source: GitHub Actions`)
+2. (Опционально) Настроить секреты для EmailJS в `Settings` → `Secrets and variables` → `Actions`
+
+Подробная инструкция: [docs/DEPLOY.md](./docs/DEPLOY.md)
+
 
 
 ## Тестирование
