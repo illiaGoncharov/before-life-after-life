@@ -11,6 +11,11 @@
    - В разделе `Source` выберите `GitHub Actions`
    - Сохраните изменения
 
+2. **Настройте environment (если требуется):**
+   - Перейдите в `Settings` → `Environments`
+   - Если environment `github-pages` не создан автоматически, создайте его
+   - Или просто используйте ручной деплой через `npm run deploy` (см. ниже)
+
 2. **Настройте переменные окружения (опционально, для EmailJS):**
    - Перейдите в `Settings` → `Secrets and variables` → `Actions`
    - Добавьте секреты (если используете EmailJS):
