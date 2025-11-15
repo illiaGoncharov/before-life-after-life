@@ -104,11 +104,6 @@
     justify-content: center;
     height: calc(100vh - 140px);
   }
-
-  .loading-message {
-    text-align: center;
-    width: 100%;
-  }
 }
 
 /* Для очень маленьких экранов */
@@ -150,8 +145,3 @@
   }
 }
 
-.loading-message {
-  color: white;
-  font-size: 1.2em;
-  opacity: 0.8;
-}

@@ -148,6 +148,14 @@
   opacity: 0.8;
 }
 
+/* Кнопки управления камерой и звуком на странице Text */
+.footer-text-controls {
+  display: flex;
+  gap: 5px;
+  align-items: baseline;
+  margin-left: auto;
+}
+
 /* Кнопка помощи - в правом нижнем углу футера */
 .footer-help-button {
   position: absolute;

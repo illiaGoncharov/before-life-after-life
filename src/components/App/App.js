@@ -4,6 +4,7 @@ import Header from "./../../ui/header/Header";
 import Footer from "./../../ui/footer/Footer";
 import { prompts } from "../../data/prompts";
 import { contributors } from "../../data/contributors";
+import Loader from "../Loader/Loader";
 
 // Ленивая загрузка компонентов для улучшения производительности
 const Gallery = lazy(() => import("./../Gallery/Gallery"));
@@ -36,6 +37,9 @@ function App() {
   const [formStep, setFormStep] = useState(1);
   // ByContributor state
   const [selectedContributorIndex, setSelectedContributorIndex] = useState(0);
+  // Text page state (camera and sound)
+  const [textCameraOn, setTextCameraOn] = useState(true);
+  const [textSoundOn, setTextSoundOn] = useState(true);
   // Флаг для отслеживания пользовательского взаимодействия для автозапуска аудио
   const hasUserInteractedRef = useRef(false);
 
@@ -113,6 +117,20 @@ function App() {
     return () => clearTimeout(timer);
   }, [lastInteractionTime, isPaused, currentComponent]);
 
+  // Маппинг названий компонентов для Loader
+  const getComponentLoaderText = (componentName) => {
+    const textMap = {
+      gallery: 'images',
+      form: 'before life',
+      about: 'afterlife',
+      text: 'text',
+      byPrompt: 'by prompt',
+      byContributor: 'by contributor',
+      card: 'andrey lopatin'
+    };
+    return textMap[componentName] || 'loading';
+  };
+
   // Безопасный рендеринг компонента с резервным вариантом
   const renderCurrentComponent = () => {
     const Component = COMPONENTS[currentComponent] || Gallery;
@@ -143,12 +161,19 @@ function App() {
     if (currentComponent === 'card') {
       componentProps.onNavigate = handleComponentChange;
     }
+    if (currentComponent === 'text') {
+      componentProps.cameraOn = textCameraOn;
+      componentProps.soundOn = textSoundOn;
+      componentProps.toggleCamera = () => setTextCameraOn((c) => !c);
+      componentProps.toggleSound = () => setTextSoundOn((s) => !s);
+    }
 
     return (
       <Suspense fallback={
-        <div className="loading-screen">
-          loading...
-        </div>
+        <Loader 
+          text={getComponentLoaderText(currentComponent)} 
+          charInterval={50}
+        />
       }>
         <Component {...componentProps} />
       </Suspense>
@@ -180,6 +205,11 @@ function App() {
         selectedContributorIndex={currentComponent === "byContributor" ? selectedContributorIndex : undefined}
         onSelectContributor={setSelectedContributorIndex}
         contributors={currentComponent === "byContributor" ? contributors : undefined}
+        // Text props
+        textCameraOn={currentComponent === "text" ? textCameraOn : undefined}
+        textSoundOn={currentComponent === "text" ? textSoundOn : undefined}
+        toggleTextCamera={() => setTextCameraOn((c) => !c)}
+        toggleTextSound={() => setTextSoundOn((s) => !s)}
       />
     </div>
   );

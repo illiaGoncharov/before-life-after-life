@@ -16,6 +16,10 @@ function Footer({
   selectedContributorIndex,
   onSelectContributor,
   contributors,
+  textCameraOn,
+  textSoundOn,
+  toggleTextCamera,
+  toggleTextSound,
 }) {
   // Управляем hover-подсказками и "липким" раскрытием меню
   const [hovered, setHovered] = useState(null); // null | 'images' | 'filters'
@@ -157,6 +161,26 @@ function Footer({
               {idx < contributors.length - 1 && <span>|</span>}
             </React.Fragment>
           ))}
+        </div>
+      )}
+      {/* Кнопки управления камерой и звуком на странице Text */}
+      {activeButton === "text" && (
+        <div className="footer-text-controls">
+          <button
+            className="footer-button"
+            onClick={toggleTextCamera}
+            aria-label="Toggle camera"
+          >
+            CAMERA {textCameraOn ? "ON" : "OFF"}
+          </button>
+          <span> | </span>
+          <button
+            className="footer-button"
+            onClick={toggleTextSound}
+            aria-label="Toggle sound"
+          >
+            SOUND {textSoundOn ? "ON" : "OFF"}
+          </button>
         </div>
       )}
       {/* Кнопка помощи - показывается только на главной странице */}

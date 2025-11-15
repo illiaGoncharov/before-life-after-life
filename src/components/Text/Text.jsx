@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Text.css";
 import { prompts } from "../../data/prompts";
+import Loader from "../Loader/Loader";
 
 // Define a direct mapping from prompt text to audio number
 const AUDIO_MAPPING = {
@@ -51,7 +52,7 @@ const AUDIO_MAPPING = {
   "afterlife": 45
 };
 
-function Text() {
+function Text({ cameraOn = true, soundOn = true, toggleCamera, toggleSound }) {
   const [offset, setOffset] = useState(window.innerHeight);
   const SCROLL_SPEED = 0.3;
   const [currentPromptInCenter, setCurrentPromptInCenter] = useState(null);
@@ -64,6 +65,7 @@ function Text() {
   const animationRef = useRef(null);
   const textWrapperRef = useRef(null);
   const audioErrorCount = useRef(0);
+  const cameraStreamRef = useRef(null);
 
   // Start scrolling immediately after brief loading
   useEffect(() => {
@@ -75,8 +77,19 @@ function Text() {
     return () => clearTimeout(fastStartTimer);
   }, []);
 
-  // Инициализация камеры
+  // Инициализация и управление камерой
   useEffect(() => {
+    if (!cameraOn) {
+      // Выключаем камеру
+      if (videoRef.current && videoRef.current.srcObject) {
+        const tracks = videoRef.current.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+        videoRef.current.srcObject = null;
+        cameraStreamRef.current = null;
+      }
+      return;
+    }
+
     const constraints = {
       video: { 
         facingMode: 'user',
@@ -86,10 +99,10 @@ function Text() {
     };
 
     // Функция для запуска камеры
-    // Выношу в отдельную функцию, чтобы можно было перезапускать
     const startCamera = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        cameraStreamRef.current = stream;
         
         if (videoRef.current) {
           // Подключаем поток к видео элементу
@@ -106,8 +119,7 @@ function Text() {
 
           // Если видео остановилось, пытаемся перезапустить
           videoRef.current.onpause = () => {
-            console.log('Видео на паузе, перезапускаем...');
-            if (videoRef.current) {
+            if (cameraOn && videoRef.current) {
               videoRef.current.play()
                 .catch(e => console.error('Ошибка перезапуска:', e));
             }
@@ -118,35 +130,35 @@ function Text() {
       }
     };
 
-    // Запускаем камеру
+    // Запускаем камеру только если она включена
     startCamera();
 
     // Следим за видимостью страницы
-    // Возможно камера выключается, когда страница становится неактивной
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        console.log('Страница стала видимой, перезапускаем камеру...');
+      if (document.visibilityState === 'visible' && cameraOn) {
         startCamera();
       }
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // При размонтировании компонента
+    // При размонтировании компонента или выключении камеры
     return () => {
-      // Убираем слежение за видимостью
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       
       // Останавливаем все треки камеры
+      if (cameraStreamRef.current) {
+        const tracks = cameraStreamRef.current.getTracks();
+        tracks.forEach(track => track.stop());
+        cameraStreamRef.current = null;
+      }
       if (videoRef.current && videoRef.current.srcObject) {
         const tracks = videoRef.current.srcObject.getTracks();
-        tracks.forEach(track => {
-          console.log('Останавливаем трек камеры:', track.label);
-          track.stop();
-        });
+        tracks.forEach(track => track.stop());
+        videoRef.current.srcObject = null;
       }
     };
-  }, []);
+  }, [cameraOn]);
 
   // Initialize audio
   useEffect(() => {
@@ -186,12 +198,20 @@ function Text() {
     }
   }, []);
 
+  // Останавливаем аудио при выключении звука
+  useEffect(() => {
+    if (!soundOn && audioRef.current && !audioRef.current.paused) {
+      audioRef.current.pause();
+      setIsAudioPlaying(false);
+    }
+  }, [soundOn]);
+
   // Set up animation and center detection
   useEffect(() => {
     if (!isInitialized) return;
     
     const checkCenterPrompt = () => {
-      if (isAudioPlaying || audioDisabled) return;
+      if (isAudioPlaying || audioDisabled || !soundOn) return;
 
       try {
         const windowCenter = window.innerHeight / 2;
@@ -239,7 +259,7 @@ function Text() {
       try {
         setOffset((prev) => prev - SCROLL_SPEED);
         
-        if (!audioDisabled) {
+        if (!audioDisabled && soundOn) {
           checkCenterPrompt();
         }
         
@@ -257,10 +277,10 @@ function Text() {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [currentPromptInCenter, isAudioPlaying, isInitialized, audioDisabled]);
+  }, [currentPromptInCenter, isAudioPlaying, isInitialized, audioDisabled, soundOn]);
 
   const playAudio = (audioNumber) => {
-    if (!audioRef.current || audioDisabled) return;
+    if (!audioRef.current || audioDisabled || !soundOn) return;
 
     try {
       setIsAudioPlaying(true);
@@ -299,20 +319,25 @@ function Text() {
   if (isLoading) {
     return (
       <div className="text-container loading">
-        <div className="loading-message">Loading...</div>
+        <Loader 
+          text="text" 
+          charInterval={50}
+        />
       </div>
     );
   }
 
   return (
     <div className="text-container">
-      <video
-        ref={videoRef}
-        autoPlay
-        playsInline
-        muted
-        className="video-bg"
-      />
+      {cameraOn && (
+        <video
+          ref={videoRef}
+          autoPlay
+          playsInline
+          muted
+          className="video-bg"
+        />
+      )}
 
       <div
         ref={textWrapperRef}
