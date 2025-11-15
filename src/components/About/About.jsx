@@ -61,6 +61,7 @@ function About() {
         <img
           className="about-image"
           src={`${process.env.PUBLIC_URL}/images/about.jpg`}
+          alt="About the project"
         />
         <p className="image-caption">
           5-channel video installation <br /> 

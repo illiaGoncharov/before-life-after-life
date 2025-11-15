@@ -104,7 +104,7 @@ const Loader = ({
       }
       // Не сбрасываем currentTextRef здесь, чтобы предотвратить повторный запуск
     };
-  }, [text, delay, charInterval, showInstantly]);
+  }, [text, delay, charInterval, showInstantly, onComplete]);
 
   return (
     <div className="loader-container">

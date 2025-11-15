@@ -149,16 +149,20 @@ function Text({ cameraOn = true, soundOn = true, toggleCamera, toggleSound }) {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       
+      // Сохраняем ссылки на текущие значения для cleanup
+      const stream = cameraStreamRef.current;
+      const video = videoRef.current;
+      
       // Останавливаем все треки камеры
-      if (cameraStreamRef.current) {
-        const tracks = cameraStreamRef.current.getTracks();
+      if (stream) {
+        const tracks = stream.getTracks();
         tracks.forEach(track => track.stop());
         cameraStreamRef.current = null;
       }
-      if (videoRef.current && videoRef.current.srcObject) {
-        const tracks = videoRef.current.srcObject.getTracks();
+      if (video && video.srcObject) {
+        const tracks = video.srcObject.getTracks();
         tracks.forEach(track => track.stop());
-        videoRef.current.srcObject = null;
+        video.srcObject = null;
       }
     };
   }, [cameraOn]);
@@ -208,6 +212,43 @@ function Text({ cameraOn = true, soundOn = true, toggleCamera, toggleSound }) {
       setIsAudioPlaying(false);
     }
   }, [soundOn]);
+
+  const playAudio = React.useCallback((audioNumber) => {
+    if (!audioRef.current || audioDisabled || !soundOn) return;
+
+    try {
+      setIsAudioPlaying(true);
+
+      const audioSrc = `${process.env.PUBLIC_URL}/audio/audio_${
+        String(audioNumber).padStart(2, "0")
+      }.mp3`;
+
+      if (!audioRef.current.paused) audioRef.current.pause();
+      audioRef.current.src = audioSrc;
+      
+      const safetyTimeout = setTimeout(() => {
+        setIsAudioPlaying(false);
+      }, 10000);
+      
+      audioRef.current.play()
+        .then(() => {
+          clearTimeout(safetyTimeout);
+        })
+        .catch((error) => {
+          console.error("Audio playback error:", error);
+          clearTimeout(safetyTimeout);
+          setIsAudioPlaying(false);
+          
+          audioErrorCount.current += 1;
+          if (audioErrorCount.current >= 3) {
+            setAudioDisabled(true);
+          }
+        });
+    } catch (error) {
+      console.error("Error playing audio:", error);
+      setIsAudioPlaying(false);
+    }
+  }, [audioDisabled, soundOn]);
 
   // Set up animation and center detection
   useEffect(() => {
@@ -281,44 +322,7 @@ function Text({ cameraOn = true, soundOn = true, toggleCamera, toggleSound }) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [currentPromptInCenter, isAudioPlaying, isInitialized, audioDisabled, soundOn]);
-
-  const playAudio = (audioNumber) => {
-    if (!audioRef.current || audioDisabled || !soundOn) return;
-
-    try {
-      setIsAudioPlaying(true);
-
-      const audioSrc = `${process.env.PUBLIC_URL}/audio/audio_${
-        String(audioNumber).padStart(2, "0")
-      }.mp3`;
-
-      if (!audioRef.current.paused) audioRef.current.pause();
-      audioRef.current.src = audioSrc;
-      
-      const safetyTimeout = setTimeout(() => {
-        setIsAudioPlaying(false);
-      }, 10000);
-      
-      audioRef.current.play()
-        .then(() => {
-          clearTimeout(safetyTimeout);
-        })
-        .catch((error) => {
-          console.error("Audio playback error:", error);
-          clearTimeout(safetyTimeout);
-          setIsAudioPlaying(false);
-          
-          audioErrorCount.current += 1;
-          if (audioErrorCount.current >= 3) {
-            setAudioDisabled(true);
-          }
-        });
-    } catch (error) {
-      console.error("Error playing audio:", error);
-      setIsAudioPlaying(false);
-    }
-  };
+  }, [currentPromptInCenter, isAudioPlaying, isInitialized, audioDisabled, soundOn, playAudio]);
 
   if (isLoading) {
     return (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "./ImageModal.css";
 
 const ImageModal = ({ images, startIndex, onClose }) => {
@@ -16,20 +16,20 @@ const ImageModal = ({ images, startIndex, onClose }) => {
     setCurrentIndex((prev) => (prev + 1) % images.length);
   };
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = useCallback((event) => {
     if (event.key === "ArrowLeft") {
-      handlePrevious();
+      setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
     } else if (event.key === "ArrowRight") {
-      handleNext();
+      setCurrentIndex((prev) => (prev + 1) % images.length);
     } else if (event.key === "Escape") {
       onClose();
     }
-  };
+  }, [images.length, onClose]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [handleKeyDown]);
 
   return (
     <div className="modal-overlay" role="dialog" aria-modal="true">
@@ -43,7 +43,7 @@ const ImageModal = ({ images, startIndex, onClose }) => {
         </button>
         <img
           src={images[currentIndex]}
-          alt={`Image ${currentIndex + 1}`}
+          alt={`${currentIndex + 1}`}
           className="modal-image"
         />
         <button

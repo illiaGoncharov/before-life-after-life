@@ -3,12 +3,8 @@ import "./ByPrompt.css";
 
 const contributors = ["andrey", "anna", "clara", "dexter", "jeff"];
 const totalPrompts = 45;
-const imagesPerPage = 5;
 
 function ByPrompt({ promptIndex, prevPrompt, nextPrompt, setLastInteractionTime }) {
-  const [loadingParts, setLoadingParts] = useState(
-    Array(totalPrompts).fill(false)
-  );
 
   useEffect(() => {
     // Симуляция загрузки контроллера

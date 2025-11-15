@@ -117,7 +117,7 @@ export default function Gallery({ onAllHidden }) {
           <div className="gallery-mobile-image-container">
             <img
               src={currentImage}
-              alt="Gallery image"
+              alt="Gallery"
               className="gallery-mobile-image"
             />
           </div>
@@ -147,7 +147,7 @@ export default function Gallery({ onAllHidden }) {
           >
             <img
               src={src}
-              alt={`Image ${index + 1}`}
+              alt={`${index + 1}`}
               loading="lazy"
               className={loadedImages.includes(src) ? "loaded" : ""}
             />
