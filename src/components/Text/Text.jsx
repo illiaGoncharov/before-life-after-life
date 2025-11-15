@@ -151,6 +151,7 @@ function Text({ cameraOn = true, soundOn = true, toggleCamera, toggleSound }) {
       
       // Сохраняем ссылки на текущие значения для cleanup
       const stream = cameraStreamRef.current;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       const video = videoRef.current;
       
       // Останавливаем все треки камеры

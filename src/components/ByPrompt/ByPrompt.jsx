@@ -1,24 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import "./ByPrompt.css";
 
 const contributors = ["andrey", "anna", "clara", "dexter", "jeff"];
 const totalPrompts = 45;
 
 function ByPrompt({ promptIndex, prevPrompt, nextPrompt, setLastInteractionTime }) {
-
-  useEffect(() => {
-    // Симуляция загрузки контроллера
-    const interval = setInterval(() => {
-      setLoadingParts((prev) => {
-        const next = [...prev];
-        const index = next.findIndex((part) => part === false);
-        if (index !== -1) next[index] = true;
-        return next;
-      });
-    }, 100);
-    return () => clearInterval(interval);
-  }, []);
-
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "ArrowLeft") {
