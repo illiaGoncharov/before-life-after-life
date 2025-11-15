@@ -53,7 +53,10 @@ const AUDIO_MAPPING = {
 };
 
 function Text({ cameraOn = true, soundOn = true, toggleCamera, toggleSound }) {
-  const [offset, setOffset] = useState(window.innerHeight);
+  // Начинаем с 0, чтобы первая титра появилась снизу экрана
+  // При top: 100vh и translateY(0) первая титра будет видна снизу
+  // Уменьшая offset (делая его отрицательным), титры будут подниматься вверх
+  const [offset, setOffset] = useState(0);
   const SCROLL_SPEED = 0.3;
   const [currentPromptInCenter, setCurrentPromptInCenter] = useState(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
@@ -257,6 +260,7 @@ function Text({ cameraOn = true, soundOn = true, toggleCamera, toggleSound }) {
     
     const animate = () => {
       try {
+        // Уменьшаем offset (делаем его отрицательным), чтобы титры двигались снизу вверх
         setOffset((prev) => prev - SCROLL_SPEED);
         
         if (!audioDisabled && soundOn) {
@@ -342,11 +346,11 @@ function Text({ cameraOn = true, soundOn = true, toggleCamera, toggleSound }) {
       <div
         ref={textWrapperRef}
         className="text-wrapper"
-        style={{ transform: `translateX(-50%) translateY(${-offset}px)` }}
+        style={{ transform: `translateX(-50%) translateY(${offset}px)` }}
       >
-        {prompts.map((prompt, idx) => (
+        {[...prompts].reverse().map((prompt, idx) => (
           <div 
-            key={idx} 
+            key={prompts.length - 1 - idx} 
             className="text-step"
           >
             {prompt}

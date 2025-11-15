@@ -168,12 +168,17 @@ function App() {
       componentProps.toggleSound = () => setTextSoundOn((s) => !s);
     }
 
+    // Для byPrompt и byContributor не показываем анимацию загрузки
+    const shouldShowLoader = currentComponent !== 'byPrompt' && currentComponent !== 'byContributor';
+    
     return (
       <Suspense fallback={
-        <Loader 
-          text={getComponentLoaderText(currentComponent)} 
-          charInterval={50}
-        />
+        shouldShowLoader ? (
+          <Loader 
+            text={getComponentLoaderText(currentComponent)} 
+            charInterval={50}
+          />
+        ) : null
       }>
         <Component {...componentProps} />
       </Suspense>
