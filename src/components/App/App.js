@@ -43,13 +43,41 @@ function App() {
   // Флаг для отслеживания пользовательского взаимодействия для автозапуска аудио
   const hasUserInteractedRef = useRef(false);
 
+  // Состояние для контроля показа Loader
+  const [isComponentLoading, setIsComponentLoading] = useState(false);
+  const loadingTimeoutRef = useRef(null);
+
   // Унифицированный обработчик переключения компонентов
   const handleComponentChange = (componentName) => {
     if (COMPONENTS[componentName]) {
+      // Останавливаем предыдущий таймаут если есть
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+      
+      // Устанавливаем состояние загрузки
+      setIsComponentLoading(true);
       setCurrentComponent(componentName);
       setActiveButton(componentName);
+      
+      // Сбрасываем состояние загрузки через задержку
+      // Это дает время показать анимацию и компоненту загрузиться
+      loadingTimeoutRef.current = setTimeout(() => {
+        setIsComponentLoading(false);
+        loadingTimeoutRef.current = null;
+      }, 500);
     }
   };
+
+  // Cleanup для таймаута загрузки
+  useEffect(() => {
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+        loadingTimeoutRef.current = null;
+      }
+    };
+  }, []);
 
   // Отслеживание пользовательского взаимодействия
   useEffect(() => {
@@ -168,20 +196,25 @@ function App() {
       componentProps.toggleSound = () => setTextSoundOn((s) => !s);
     }
 
-    // Для byPrompt и byContributor не показываем анимацию загрузки
-    const shouldShowLoader = currentComponent !== 'byPrompt' && currentComponent !== 'byContributor';
+    // Для byPrompt, byContributor и gallery не показываем анимацию загрузки
+    const shouldShowLoader = currentComponent !== 'byPrompt' && 
+                             currentComponent !== 'byContributor' && 
+                             currentComponent !== 'gallery';
+    const loaderText = getComponentLoaderText(currentComponent);
     
     return (
-      <Suspense fallback={
-        shouldShowLoader ? (
+      <>
+        {/* Показываем Loader только при явном состоянии загрузки, а не через Suspense */}
+        {isComponentLoading && shouldShowLoader && (
           <Loader 
-            text={getComponentLoaderText(currentComponent)} 
+            text={loaderText} 
             charInterval={50}
           />
-        ) : null
-      }>
-        <Component {...componentProps} />
-      </Suspense>
+        )}
+        <Suspense fallback={null}>
+          <Component {...componentProps} />
+        </Suspense>
+      </>
     );
   };
 
