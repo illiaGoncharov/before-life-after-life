@@ -5,6 +5,10 @@
   font-family: "Hershey-Noailles-Times";
   color: white;
   background-color: black;
+  overflow-x: hidden; /* Предотвращаем горизонтальный скролл */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .card-content {

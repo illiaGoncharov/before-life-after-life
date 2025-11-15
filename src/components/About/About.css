@@ -1,5 +1,9 @@
 .about-container {
   margin-bottom: 45px;
+  overflow-x: hidden; /* Предотвращаем горизонтальный скролл */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .about-container p {

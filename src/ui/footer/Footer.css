@@ -11,6 +11,7 @@
   padding-top: 5px;
   padding-bottom: 15px;
   z-index: 2;
+  min-height: 40px; /* Фиксируем минимальную высоту, чтобы избежать сдвига контента */
 }
 
 /* Отображаем только активную секцию; скрытые не влияют на раскладку */
@@ -18,7 +19,7 @@
 .footer-section[data-visible="true"] { display: flex; }
 
 /* Базовая строка IMAGES: ALL */
-.footer-base { gap: 5px; align-items: baseline; }
+.footer-base { gap: 5px; }
 
 .footer span {
   opacity: 0.4;
@@ -37,30 +38,22 @@
   text-transform: uppercase;
   background-color: transparent;
   border: none;
+  border-bottom: 1px solid transparent; /* Фиксируем место для подчеркивания, чтобы не было смещения */
   color: white;
   padding: 0;
-  position: relative; /* всегда relative, чтобы не было сдвига при появлении подчёркивания */
+  text-decoration: none; /* Убираем возможное подчеркивание */
+  box-sizing: border-box; /* Учитываем border в размерах */
+  transition: border-color 0.2s ease, opacity 0.2s ease; /* Плавное изменение */
 }
 
 .footer-button:hover,
 .footer-button:focus,
 .footer-button:active { opacity: 0.4; }
 
-.footer-button.active { opacity: 0.8; }
-
-/* Подчеркивание: тонкая линия, не влияет на раскладку */
-.footer-button::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px; /* ближе к тексту */
-  height: 1px; /* тоньше линия */
-  background: white;
-  opacity: 0; /* скрыта по умолчанию, чтобы не менять метрики */
-  pointer-events: none;
+.footer-button.active { 
+  opacity: 0.8;
+  border-bottom-color: white; /* Показываем подчеркивание для активной кнопки */
 }
-.footer-button.active::after { opacity: 1; }
 
 /* Кнопка-лейбл "IMAGES:" в базе */
 .footer-label-button {
@@ -75,8 +68,10 @@
   border: none;
   color: white;
   padding: 0;
+  text-decoration: none; /* Убираем возможное подчеркивание */
 }
 .footer-label-button:focus { outline: none; }
+.footer-label-button:hover { text-decoration: none; } /* Убираем подчеркивание при hover */
 
 .footer-filter {
   margin-left: 0;
@@ -151,4 +146,107 @@
 
 .footer-contributor-nav .footer-button.active {
   opacity: 0.8;
+}
+
+/* Кнопка помощи - в правом нижнем углу футера */
+.footer-help-button {
+  position: absolute;
+  right: 20px;
+  bottom: 15px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0.4;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-help-button:hover {
+  opacity: 0.8;
+}
+
+.footer-help-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+/* Overlay с объяснениями */
+.help-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* Затемненный фон */
+  z-index: 1000;
+  cursor: pointer;
+}
+
+.help-overlay-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.help-item {
+  position: absolute;
+  pointer-events: none;
+}
+
+.help-line {
+  pointer-events: none;
+  overflow: visible;
+}
+
+.help-text {
+  position: fixed;
+  font-family: "Hershey-Noailles-Times";
+  font-size: 0.95rem;
+  color: white;
+  opacity: 0.8;
+  white-space: nowrap;
+  pointer-events: none;
+  max-width: 300px;
+  line-height: 1.4;
+  z-index: 1001;
+}
+
+/* Адаптация для длинного текста */
+.help-text-all {
+  max-width: 350px;
+  white-space: normal;
+}
+
+/* Уникальные позиции для каждого текста, чтобы не наезжали */
+.help-text-before-life {
+  transform: translateY(-50%);
+}
+
+.help-text-images {
+  transform: translateY(-50%);
+}
+
+.help-text-all {
+  transform: translateY(-50%);
+  white-space: normal;
+}
+
+.help-text-afterlife {
+  transform: translateY(-50%);
+  text-align: right;
+}
+
+/* Выделение ключевых слов в тексте объяснений */
+.help-text-highlight {
+  font-family: "Hershey-Noailles-Futura-Triplex-Regular";
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  opacity: 0.4;
+  color: white;
 }
