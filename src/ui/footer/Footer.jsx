@@ -117,35 +117,41 @@ function Footer({
         </div>
       {/* Now Playing and playback controls for ByPrompt */}
       {activeButton === "byPrompt" && (
-        <div className="footer-playback">
-          <span className="footer-now-playing">
-            NOW PLAYING: {prompts[prompts.length - 1 - promptIndex]}
-          </span>
-          <button
-            className="footer-sound-toggle"
-            onClick={toggleSound}
-          >
-            SOUND: {soundOn ? "ON" : "OFF"}
-          </button>
-          <button
-            className="footer-ctrl-button"
-            onClick={prevPrompt}
-          >
-            &lt;
-          </button>
-          <button
-            className="footer-ctrl-button"
-            onClick={togglePause}
-          >
-            {isPaused ? "PLAY" : "PAUSE"}
-          </button>
-          <button
-            className="footer-ctrl-button"
-            onClick={nextPrompt}
-          >
-            &gt;
-          </button>
-        </div>
+        <>
+          {/* Переключатели со стрелками в центре */}
+          <div className="footer-playback-controls">
+            <button
+              className="footer-ctrl-button"
+              onClick={prevPrompt}
+            >
+              &lt;
+            </button>
+            <button
+              className="footer-ctrl-button"
+              onClick={togglePause}
+            >
+              {isPaused ? "PLAY" : "PAUSE"}
+            </button>
+            <button
+              className="footer-ctrl-button"
+              onClick={nextPrompt}
+            >
+              &gt;
+            </button>
+          </div>
+          {/* NOW PLAYING и SOUND справа */}
+          <div className="footer-playback-info">
+            <span className="footer-now-playing">
+              NOW PLAYING: {prompts[prompts.length - 1 - promptIndex]}
+            </span>
+            <button
+              className="footer-sound-toggle"
+              onClick={toggleSound}
+            >
+              SOUND: {soundOn ? "ON" : "OFF"}
+            </button>
+          </div>
+        </>
       )}
       {/* Contributor navigation buttons in footer */}
       {activeButton === "byContributor" && contributors && (

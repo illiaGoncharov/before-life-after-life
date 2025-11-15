@@ -10,9 +10,9 @@
 
 .image-byprompt-item {
   object-fit: contain;
-  width: calc((100% - 40px - 40px) / 5);
+  flex: 1 1 0; /* Динамическая ширина с учетом gap */
   max-width: 100%;
-  flex-shrink: 0;
+  min-width: 0;
 }
 
 .footer-byprompt-navigation {

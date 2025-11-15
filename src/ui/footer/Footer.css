@@ -102,8 +102,18 @@
   padding: 0;
 }
 
-/* Playback controls for ByPrompt mode */
-.footer-playback {
+/* Переключатели со стрелками в центре для ByPrompt */
+.footer-playback-controls {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* NOW PLAYING и SOUND справа для ByPrompt */
+.footer-playback-info {
   display: flex;
   gap: 10px;
   align-items: center;
