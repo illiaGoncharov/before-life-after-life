@@ -4,6 +4,7 @@ import Typewriter from "../Typewriter/Typewriter";
 import Loader from "../Loader/Loader";
 import { STEP1_ITEMS, STEP3_ITEMS, STEP4_ITEMS } from "./formSteps";
 import { submitFormData, saveFormProgress, loadFormProgress, clearFormProgress } from "../../utils/formSubmission";
+import { uploadImagesToCloudinary } from "../../utils/cloudinaryUpload";
 
 /**
  * Основной компонент формы для проекта Before Life After Life
@@ -125,6 +126,19 @@ function Form({ onNavigate, onStepChange }) {
     if (step === 3) setTypedStep3Count(0);
   }, [step]);
 
+  // Очистка blob URLs при размонтировании компонента для предотвращения утечек памяти
+  useEffect(() => {
+    return () => {
+      images.forEach(img => {
+        if (img && typeof img === 'string') {
+          URL.revokeObjectURL(img);
+        } else if (img && img.url) {
+          URL.revokeObjectURL(img.url);
+        }
+      });
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
 
   // Уведомление родительского компонента об изменении шага
   useEffect(() => {
@@ -141,11 +155,23 @@ function Form({ onNavigate, onStepChange }) {
     const newImages = [...images];
     
     // Загружаем файлы начиная с выбранной ячейки
+    // Сохраняем и File объект, и blob URL для отображения
     files.forEach((file, idx) => {
       const currentIndex = startIndex + idx;
       // Проверяем, что не выходим за пределы массива
       if (currentIndex < totalPrompts) {
-        newImages[currentIndex] = URL.createObjectURL(file);
+        // Освобождаем старый blob URL если он был
+        if (newImages[currentIndex] && typeof newImages[currentIndex] === 'string') {
+          URL.revokeObjectURL(newImages[currentIndex]);
+        } else if (newImages[currentIndex] && newImages[currentIndex].url) {
+          URL.revokeObjectURL(newImages[currentIndex].url);
+        }
+        
+        // Сохраняем объект с File и URL для отображения
+        newImages[currentIndex] = {
+          file: file,
+          url: URL.createObjectURL(file),
+        };
       }
     });
 
@@ -158,39 +184,78 @@ function Form({ onNavigate, onStepChange }) {
     setIsSubmitting(true);
     setSubmitError(null);
 
-    // Собираем данные формы
-    const formData = new FormData(e.target);
-    const formValues = {
-      name: formData.get('name') || '',
-      email: formData.get('email') || '',
-      origin: formData.get('origin') || '',
-      customPrompt: customPrompt,
-      payment: formData.get('payment') || '',
-      train_ai: formData.get('train_ai') || '',
-      publicly: formData.get('publicly') || '',
-    };
+    try {
+      // Собираем данные формы
+      const formData = new FormData(e.target);
+      const formValues = {
+        name: formData.get('name') || '',
+        email: formData.get('email') || '',
+        origin: formData.get('origin') || '',
+        customPrompt: customPrompt,
+        payment: formData.get('payment') || '',
+        train_ai: formData.get('train_ai') || '',
+        publicly: formData.get('publicly') || '',
+      };
 
-    // Сохраняем прогресс перед отправкой
-    saveFormProgress({
-      step,
-      formValues,
-      imagesCount: images.filter(img => img !== null).length,
-    });
+      // Извлекаем File объекты из состояния images
+      const imageFiles = images
+        .filter(img => img !== null && img.file instanceof File)
+        .map(img => img.file);
 
-    // Отправляем данные через EmailJS
-    const result = await submitFormData(formValues, images);
+      // Загружаем изображения в Cloudinary
+      let cloudinaryUrls = [];
+      if (imageFiles.length > 0) {
+        setSubmitError('Загрузка изображений...');
+        const uploadResults = await uploadImagesToCloudinary(imageFiles);
+        
+        // Проверяем результаты загрузки
+        const successfulUploads = uploadResults.filter(r => r.success);
+        const failedUploads = uploadResults.filter(r => !r.success);
+        
+        if (failedUploads.length > 0) {
+          console.warn('Некоторые изображения не удалось загрузить:', failedUploads);
+        }
+        
+        cloudinaryUrls = successfulUploads.map(r => r.url);
+        
+        if (cloudinaryUrls.length === 0 && imageFiles.length > 0) {
+          throw new Error('Не удалось загрузить изображения. Пожалуйста, проверьте настройки Cloudinary.');
+        }
+      }
 
-    if (result.success) {
-      // Очищаем сохраненный прогресс после успешной отправки
-      clearFormProgress();
-      setCompleted(true);
-      setTypedStep4Count(0);
-    } else {
-      setSubmitError(result.message || 'Ошибка при отправке формы');
-      console.error('Form submission error:', result.error);
+      // Сохраняем прогресс перед отправкой
+      // Фильтруем изображения для подсчета (поддерживаем старый формат строк и новый формат объектов)
+      const imagesCount = images.filter(img => {
+        if (img === null) return false;
+        if (typeof img === 'string') return true;
+        if (img && img.url) return true;
+        return false;
+      }).length;
+      
+      saveFormProgress({
+        step,
+        formValues,
+        imagesCount,
+      });
+
+      // Отправляем данные через EmailJS вместе со ссылками на Cloudinary
+      const result = await submitFormData(formValues, images, cloudinaryUrls);
+
+      if (result.success) {
+        // Очищаем сохраненный прогресс после успешной отправки
+        clearFormProgress();
+        setCompleted(true);
+        setTypedStep4Count(0);
+      } else {
+        setSubmitError(result.message || 'Ошибка при отправке формы');
+        console.error('Form submission error:', result.error);
+      }
+    } catch (error) {
+      setSubmitError(error.message || 'Ошибка при обработке формы');
+      console.error('Form submission error:', error);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setIsSubmitting(false);
   };
 
   // Если loader не завершен, показываем loader
@@ -430,23 +495,30 @@ function Form({ onNavigate, onStepChange }) {
                 <p>Drag and drop between 13 and 42 images below</p>
               </div>
               <div className="form-image-grid">
-                {Array.from({ length: 42 }, (_, i) => (
-                  <div key={i} className="form-grid-cell">
-                    {images[i] ? (
-                      <img loading="lazy" src={images[i]} alt={`Upload ${i + 1}`} />
-                    ) : (
-                      <label>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          onChange={(e) => handleImageUpload(e, i)}
-                          style={{ display: "none" }}
-                        />
-                      </label>
-                    )}
-                  </div>
-                ))}
+                {Array.from({ length: 42 }, (_, i) => {
+                  const imageData = images[i];
+                  const imageUrl = imageData 
+                    ? (typeof imageData === 'string' ? imageData : imageData.url)
+                    : null;
+                  
+                  return (
+                    <div key={i} className="form-grid-cell">
+                      {imageUrl ? (
+                        <img loading="lazy" src={imageUrl} alt={`Upload ${i + 1}`} />
+                      ) : (
+                        <label>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(e) => handleImageUpload(e, i)}
+                            style={{ display: "none" }}
+                          />
+                        </label>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
               {step === 2 && (
                 <button

@@ -14,9 +14,10 @@ const EMAILJS_CONFIG = {
  * Подготовка данных формы для отправки
  * @param {Object} formData - Данные формы
  * @param {Array} images - Массив изображений (File objects или URLs)
+ * @param {Array} cloudinaryUrls - Массив ссылок на загруженные изображения в Cloudinary
  * @returns {Object} Подготовленные данные
  */
-const prepareFormData = (formData, images) => {
+const prepareFormData = (formData, images, cloudinaryUrls = []) => {
   const uploadedImagesCount = images.filter(img => img !== null).length;
   
   return {
@@ -28,6 +29,8 @@ const prepareFormData = (formData, images) => {
     trainAi: formData.train_ai || '',
     publicly: formData.publicly || '',
     imagesCount: uploadedImagesCount,
+    cloudinaryUrls: cloudinaryUrls,
+    cloudinaryUrlsCount: cloudinaryUrls.length,
     timestamp: new Date().toISOString(),
   };
 };
@@ -36,11 +39,17 @@ const prepareFormData = (formData, images) => {
  * Отправка данных формы через EmailJS
  * @param {Object} formData - Данные формы
  * @param {Array} images - Массив изображений
+ * @param {Array} cloudinaryUrls - Массив ссылок на загруженные изображения в Cloudinary
  * @returns {Promise} Promise с результатом отправки
  */
-export const submitFormData = async (formData, images) => {
+export const submitFormData = async (formData, images, cloudinaryUrls = []) => {
   try {
-    const preparedData = prepareFormData(formData, images);
+    const preparedData = prepareFormData(formData, images, cloudinaryUrls);
+    
+    // Формируем список ссылок на изображения для email
+    const imagesList = cloudinaryUrls.length > 0
+      ? cloudinaryUrls.map((url, idx) => `${idx + 1}. ${url}`).join('\n')
+      : 'Изображения не были загружены';
     
     // Преобразуем данные в формат для EmailJS
     const templateParams = {
@@ -52,6 +61,8 @@ export const submitFormData = async (formData, images) => {
       train_ai: preparedData.trainAi || 'Not specified',
       publicly: preparedData.publicly || 'Not specified',
       images_count: preparedData.imagesCount.toString(),
+      cloudinary_urls_count: preparedData.cloudinaryUrlsCount.toString(),
+      cloudinary_urls: imagesList,
       timestamp: preparedData.timestamp,
       message: JSON.stringify(preparedData, null, 2), // Полные данные в JSON формате
     };
