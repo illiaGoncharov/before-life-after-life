@@ -35,6 +35,11 @@ jobs:
           REACT_APP_EMAILJS_TEMPLATE_ID: ${{ secrets.REACT_APP_EMAILJS_TEMPLATE_ID }}
           REACT_APP_EMAILJS_PUBLIC_KEY: ${{ secrets.REACT_APP_EMAILJS_PUBLIC_KEY }}
       
+      - name: Check build output
+        run: |
+          ls -la build/
+          echo "Build directory contents checked"
+      
       - name: Setup Pages
         uses: actions/configure-pages@v4
       
