@@ -40,5 +40,12 @@ Follow these rules when you write code:
 
 - Always use Conventional Commits format for commit messages.
 - Format: `<type>(<scope>): <description>`
-- Types: `feat` (new feature), `fix` (bug fix), `docs` (documentation), `style` (formatting), `refactor` (code restructuring), `test` (tests), `chore` (maintenance)
+- Types:
+  - `feat` (new feature)
+  - `fix` (bug fix)
+  - `docs` (documentation)
+  - `style` (formatting)
+  - `refactor` (code restructuring)
+  - `test` (tests)
+  - `chore` (maintenance)
 - Examples: `feat: добавлены кнопки управления камерой`, `fix: исправлена ошибка горизонтального скролла`

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Form.css";
 import Typewriter from "../Typewriter/Typewriter";
 import Loader from "../Loader/Loader";
@@ -35,10 +35,19 @@ function Form({ onNavigate, onStepChange }) {
   const [showHints, setShowHints] = useState({}); // Управление видимостью подсказок
   const [isMobile, setIsMobile] = useState(false); // Определение мобильного устройства
   
+  // Refs для элементов формы - для проверки кликов
+  const formTextViewRef = useRef(null);
+  const formDataViewRef = useRef(null);
+  const formUploadViewRef = useRef(null);
+  const formCompletedViewRef = useRef(null);
+  const nextButtonRef = useRef(null);
+  const nextButtonHandlerRef = useRef(null);
+  
   // Состояния для управления анимацией печатной машинки
   const [typedStep1Count, setTypedStep1Count] = useState(0);
   const [typedStep3Count, setTypedStep3Count] = useState(0);
   const [typedStep4Count, setTypedStep4Count] = useState(0);
+  const [skipAnimations, setSkipAnimations] = useState(false); // Флаг для пропуска анимаций
   
   // Настройки анимации
   const CHAR_INTERVAL = 15; // Увеличиваем интервал для более плавной анимации
@@ -46,6 +55,21 @@ function Form({ onNavigate, onStepChange }) {
   // Управление мгновенным отображением текста для разработки
   // Установите в true чтобы отключить анимацию при разработке
   const isInstantText = false;
+
+  // Обработчик клика для пропуска анимации
+  const handleSkipAnimation = () => {
+    // Пропускаем все текущие анимации независимо от флага skipAnimations
+    if (step === 1 && typedStep1Count < STEP1_ITEMS.length) {
+      setSkipAnimations(true);
+      setTypedStep1Count(STEP1_ITEMS.length);
+    } else if (step === 3 && typedStep3Count < STEP3_ITEMS.length) {
+      setSkipAnimations(true);
+      setTypedStep3Count(STEP3_ITEMS.length);
+    } else if (completed && typedStep4Count < STEP4_ITEMS.length) {
+      setSkipAnimations(true);
+      setTypedStep4Count(STEP4_ITEMS.length);
+    }
+  };
 
   // Определение мобильного устройства
   useEffect(() => {
@@ -101,6 +125,7 @@ function Form({ onNavigate, onStepChange }) {
     if (step === 1) setTypedStep1Count(0);
     if (step === 3) setTypedStep3Count(0);
   }, [step]);
+
 
   // Уведомление родительского компонента об изменении шага
   useEffect(() => {
@@ -182,8 +207,34 @@ function Form({ onNavigate, onStepChange }) {
 
   // Обработчик клика в пустоте для возврата на главную
   const handleContainerClick = (e) => {
-    // Клик только в пустоте контейнера, не на дочерних элементах
-    if (e.target === e.currentTarget) {
+    const clickedElement = e.target;
+    
+    // Проверяем через классы в первую очередь - это работает даже если элементы еще не полностью загружены
+    // Включаем кнопки в список элементов формы, чтобы они работали
+    const isFormElementByClass = clickedElement.closest('.form-text-view, .form-data-view, .form-upload-view, .form-completed-view, .form-text-list, .form-text-list-element, .form-data-view-form, .form-data-field, .form-image-grid, .form-grid-cell') || clickedElement.closest('button');
+    
+    // Также проверяем через refs если они доступны
+    const isFormElementByRef = 
+      (formTextViewRef.current && formTextViewRef.current.contains(clickedElement)) ||
+      (formDataViewRef.current && formDataViewRef.current.contains(clickedElement)) ||
+      (formUploadViewRef.current && formUploadViewRef.current.contains(clickedElement)) ||
+      (formCompletedViewRef.current && formCompletedViewRef.current.contains(clickedElement));
+    
+    // Если клик на элементе формы - не обрабатываем и останавливаем всплытие
+    if (isFormElementByClass || isFormElementByRef) {
+      e.stopPropagation();
+      e.preventDefault();
+      return;
+    }
+    
+    // Проверяем, идет ли анимация - если да, не переходим на главную
+    const isAnimationInProgress = 
+      (step === 1 && typedStep1Count < STEP1_ITEMS.length) ||
+      (step === 3 && typedStep3Count < STEP3_ITEMS.length) ||
+      (completed && typedStep4Count < STEP4_ITEMS.length);
+    
+    // Переход на главную только если клик точно на контейнере (пустое место) И анимация не идет
+    if (clickedElement === e.currentTarget && !isAnimationInProgress) {
       if (onNavigate) {
         onNavigate("gallery");
       }
@@ -191,32 +242,140 @@ function Form({ onNavigate, onStepChange }) {
   };
 
   return (
-    <div className="form-container" onClick={handleContainerClick}>
+    <div 
+      className="form-container" 
+      onClickCapture={(e) => {
+        // Перехватываем событие в фазе capture
+        const clickedElement = e.target;
+        
+        // НЕ блокируем кнопки формы - они должны работать
+        const isFormButton = clickedElement.classList.contains('form-text-next-button') || 
+                             clickedElement.closest('.form-text-next-button') ||
+                             clickedElement.classList.contains('form-upload-button') ||
+                             clickedElement.closest('.form-upload-button');
+        if (isFormButton) {
+          console.log('Form button detected in container onClickCapture, allowing it');
+          return; // Не блокируем кнопку
+        }
+        
+        // Проверяем через классы - это работает даже если элементы еще не полностью загружены
+        const isFormElementByClass = clickedElement.closest('.form-text-view, .form-data-view, .form-upload-view, .form-completed-view, .form-text-list, .form-text-list-element, .form-data-view-form, .form-data-field, .form-image-grid, .form-grid-cell');
+        
+        // Также проверяем через refs если они доступны
+        const isFormElementByRef = 
+          (formTextViewRef.current && formTextViewRef.current.contains(clickedElement)) ||
+          (formDataViewRef.current && formDataViewRef.current.contains(clickedElement)) ||
+          (formUploadViewRef.current && formUploadViewRef.current.contains(clickedElement)) ||
+          (formCompletedViewRef.current && formCompletedViewRef.current.contains(clickedElement));
+        
+        // Если клик на элементе формы - останавливаем всплытие до контейнера
+        if (isFormElementByClass || isFormElementByRef) {
+          e.stopPropagation();
+        }
+      }}
+      onClick={(e) => {
+        // Дублируем проверку в onClick для надежности
+        const clickedElement = e.target;
+        
+        // НЕ блокируем кнопки формы - они должны работать
+        const isFormButton = clickedElement.classList.contains('form-text-next-button') || 
+                             clickedElement.closest('.form-text-next-button') ||
+                             clickedElement.classList.contains('form-upload-button') ||
+                             clickedElement.closest('.form-upload-button');
+        if (isFormButton) {
+          console.log('Form button detected in container onClick, allowing it');
+          return; // Не блокируем кнопку
+        }
+        
+        // Проверяем через классы в первую очередь
+        const isFormElementByClass = clickedElement.closest('.form-text-view, .form-data-view, .form-upload-view, .form-completed-view, .form-text-list, .form-text-list-element, .form-data-view-form, .form-data-field, .form-image-grid, .form-grid-cell');
+        
+        // Также проверяем через refs если они доступны
+        const isFormElementByRef = 
+          (formTextViewRef.current && formTextViewRef.current.contains(clickedElement)) ||
+          (formDataViewRef.current && formDataViewRef.current.contains(clickedElement)) ||
+          (formUploadViewRef.current && formUploadViewRef.current.contains(clickedElement)) ||
+          (formCompletedViewRef.current && formCompletedViewRef.current.contains(clickedElement));
+        
+        // Если клик на элементе формы - останавливаем всплытие, но НЕ вызываем handleContainerClick
+        if (isFormElementByClass || isFormElementByRef) {
+          e.stopPropagation();
+          return;
+        }
+        
+        // Вызываем оригинальный обработчик только если клик не на форме (пустое место)
+        handleContainerClick(e);
+      }}
+    >
       {!completed ? (
         <>
           {/* Секция отображения текста с эффектом печатной машинки */}
           {/* На мобильных скрываем если шаг > 1, на десктопе показываем всегда с dimmed */}
-          <div className={`form-text-view ${step > 1 ? "dimmed" : ""} ${isMobile && step > 1 ? "form-step-hidden" : ""}`} onClick={(e) => e.stopPropagation()}>
+          <div 
+            ref={formTextViewRef}
+            className={`form-text-view ${step > 1 ? "dimmed" : ""} ${isMobile && step > 1 ? "form-step-hidden" : ""}`} 
+            onClick={(e) => {
+              // Если клик на кнопке Next - НЕ обрабатываем и НЕ блокируем
+              const isNextButton = e.target.classList.contains('form-text-next-button') || 
+                                   e.target.closest('.form-text-next-button') ||
+                                   e.target === nextButtonRef.current;
+              if (isNextButton) {
+                console.log('Click on Next button detected in form-text-view onClick, allowing it');
+                // НЕ вызываем stopPropagation для кнопки!
+                return;
+              }
+              // Останавливаем всплытие, чтобы не переходить на главную
+              e.stopPropagation();
+              // Пропускаем анимацию при клике на область текста
+              if (step === 1 && typedStep1Count < STEP1_ITEMS.length) {
+                handleSkipAnimation();
+              }
+            }}
+            onMouseDown={(e) => {
+              // Если клик на кнопке Next - НЕ обрабатываем
+              if (e.target.classList.contains('form-text-next-button') || 
+                  e.target.closest('.form-text-next-button')) {
+                return;
+              }
+              // Останавливаем всплытие для пропуска анимации
+              e.stopPropagation();
+              // Пропускаем анимацию при клике на область текста
+              if (step === 1 && typedStep1Count < STEP1_ITEMS.length) {
+                handleSkipAnimation();
+              }
+            }}
+            style={{ cursor: step === 1 && typedStep1Count < STEP1_ITEMS.length ? 'pointer' : 'default' }}
+            title={step === 1 && typedStep1Count < STEP1_ITEMS.length ? 'Кликните, чтобы пропустить анимацию' : ''}
+          >
             <ul className="form-text-list">
               {STEP1_ITEMS.map((item, idx) => {
                 const isComplete = idx < typedStep1Count;
                 const isTyping = idx === typedStep1Count;
                 
                 return (
-                  <li key={idx} className="form-text-list-element">
+                    <li 
+                      key={idx} 
+                      className="form-text-list-element"
+                    >
                     {(isComplete || isTyping) && (
                       <>
-                        <span>{item.prefix}</span>
+                          <span>
+                            {item.prefix}
+                          </span>
                         {isComplete ? (
-                          <p>{item.text}</p>
+                            <p>
+                              {item.text}
+                            </p>
                         ) : (
+                            <div>
                           <Typewriter
                             key={`typewriter-${idx}`}
                             text={item.text}
                             charInterval={CHAR_INTERVAL}
                             onComplete={handleStep1Complete}
-                            isInstant={isInstantText}
+                                isInstant={isInstantText || skipAnimations}
                           />
+                            </div>
                         )}
                       </>
                     )}
@@ -226,8 +385,18 @@ function Form({ onNavigate, onStepChange }) {
             </ul>
             {step === 1 && typedStep1Count >= STEP1_ITEMS.length && (
               <button
+                ref={nextButtonRef}
                 className="form-text-next-button"
-                onClick={() => setStep(2)}
+                type="button"
+                onClick={(e) => {
+                  console.log('DIRECT onClick on Next button!');
+                  e.stopPropagation();
+                  e.preventDefault();
+                  console.log('Calling setStep(2), current step:', step);
+                  setStep(2);
+                  console.log('setStep(2) called');
+                }}
+                style={{ pointerEvents: 'auto', zIndex: 1000, position: 'relative' }}
               >
                 [Next]
               </button>
@@ -237,7 +406,26 @@ function Form({ onNavigate, onStepChange }) {
           {/* Секция сетки для загрузки изображений */}
           {/* На мобильных показываем только на шаге 2, на десктопе показываем всегда с dimmed */}
           {step > 1 && (
-            <div className={`form-upload-view ${step === 3 ? "dimmed" : ""} ${isMobile && step !== 2 ? "form-step-hidden" : ""}`} onClick={(e) => e.stopPropagation()}>
+            <div 
+              ref={formUploadViewRef}
+              className={`form-upload-view ${step === 3 ? "dimmed" : ""} ${isMobile && step !== 2 ? "form-step-hidden" : ""}`} 
+              onClickCapture={(e) => {
+                // НЕ блокируем кнопку upload - она должна работать
+                const isUploadButton = e.target.classList.contains('form-upload-button') || 
+                                      e.target.closest('.form-upload-button');
+                if (!isUploadButton) {
+                  e.stopPropagation();
+                }
+              }}
+              onClick={(e) => {
+                // НЕ блокируем кнопку upload - она должна работать
+                const isUploadButton = e.target.classList.contains('form-upload-button') || 
+                                      e.target.closest('.form-upload-button');
+                if (!isUploadButton) {
+                  e.stopPropagation();
+                }
+              }}
+            >
               <div className="form-upload-header">
                 <span>[1]</span>
                 <p>Drag and drop between 13 and 42 images below</p>
@@ -264,8 +452,16 @@ function Form({ onNavigate, onStepChange }) {
               {step === 2 && (
                 <button
                   className="form-upload-button"
-                  onClick={() => setStep(3)}
+                  onClick={(e) => {
+                    console.log('Upload button clicked!');
+                    e.stopPropagation();
+                    e.preventDefault();
+                    console.log('Calling setStep(3), current step:', step);
+                    setStep(3);
+                    console.log('setStep(3) called');
+                  }}
                   disabled={!images.some((img) => img !== null)}
+                  type="button"
                 >
                   [UPLOAD]
                 </button>
@@ -276,7 +472,20 @@ function Form({ onNavigate, onStepChange }) {
           {/* Форма для имени и данных */}
           {/* На мобильных показываем только на шаге 3 */}
           {step === 3 && (
-            <div className={`form-data-view ${isMobile && step !== 3 ? "form-step-hidden" : ""}`} onClick={(e) => e.stopPropagation()}>
+            <div 
+              ref={formDataViewRef}
+              className={`form-data-view ${isMobile && step !== 3 ? "form-step-hidden" : ""}`} 
+              onClickCapture={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                // Пропускаем анимацию при клике на область формы
+                if (typedStep3Count < STEP3_ITEMS.length) {
+                  handleSkipAnimation();
+                }
+              }}
+              style={{ cursor: typedStep3Count < STEP3_ITEMS.length ? 'pointer' : 'default' }}
+              title={typedStep3Count < STEP3_ITEMS.length ? 'Кликните, чтобы пропустить анимацию' : ''}
+            >
               <form className="form-data-view-form" onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()}>
                 {STEP3_ITEMS.map((item, idx) => {
                   const isComplete = idx < typedStep3Count;
@@ -295,7 +504,7 @@ function Form({ onNavigate, onStepChange }) {
                                 text={item.text}
                                 charInterval={CHAR_INTERVAL}
                                 onComplete={() => setTypedStep3Count(prev => prev + 1)}
-                                isInstant={isInstantText}
+                                isInstant={isInstantText || skipAnimations}
                               />
                             ) : null}
 
@@ -439,7 +648,20 @@ function Form({ onNavigate, onStepChange }) {
           )}
         </>
       ) : (
-        <div className="form-completed-view" onClick={(e) => e.stopPropagation()}>
+        <div 
+          ref={formCompletedViewRef}
+          className="form-completed-view" 
+          onClickCapture={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            // Пропускаем анимацию при клике на область завершения
+            if (typedStep4Count < STEP4_ITEMS.length) {
+              handleSkipAnimation();
+            }
+          }}
+          style={{ cursor: typedStep4Count < STEP4_ITEMS.length ? 'pointer' : 'default' }}
+          title={typedStep4Count < STEP4_ITEMS.length ? 'Кликните, чтобы пропустить анимацию' : ''}
+        >
           <div className="form-completed-text">
             {STEP4_ITEMS.map((item, idx) => {
               const isComplete = idx < typedStep4Count;
@@ -455,7 +677,7 @@ function Form({ onNavigate, onStepChange }) {
                       text={item.text}
                       charInterval={CHAR_INTERVAL}
                       onComplete={() => setTypedStep4Count((c) => c + 1)}
-                      instant={true}
+                      isInstant={skipAnimations}
                     />
                   )}
                 </div>

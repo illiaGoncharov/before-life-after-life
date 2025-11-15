@@ -18,6 +18,7 @@
 .form-upload-view,
 .form-completed-view {
   cursor: default; /* Восстанавливаем курсор для контента */
+  pointer-events: auto; /* Обеспечиваем обработку кликов на элементах формы */
 }
 
 .form-text-view,

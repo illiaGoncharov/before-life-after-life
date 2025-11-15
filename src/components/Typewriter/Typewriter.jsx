@@ -12,7 +12,8 @@ const Typewriter = ({
   text = "", 
   charInterval = 15, 
   onComplete, 
-  isInstant = false 
+  isInstant = false,
+  skipAnimation = false
 }) => {
   const [displayedText, setDisplayedText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -20,7 +21,7 @@ const Typewriter = ({
   const indexRef = useRef(0);
 
   useEffect(() => {
-    if (isInstant) {
+    if (isInstant || skipAnimation) {
       setDisplayedText(text);
       setIsTyping(false);
       if (onComplete) onComplete();
@@ -51,7 +52,7 @@ const Typewriter = ({
       setIsTyping(false);
       indexRef.current = 0;
     };
-  }, [text, charInterval, isInstant, onComplete]);
+  }, [text, charInterval, isInstant, skipAnimation, onComplete]);
 
   return (
     <p className={`typewriter-text ${isTyping ? "typing" : ""}`}>
