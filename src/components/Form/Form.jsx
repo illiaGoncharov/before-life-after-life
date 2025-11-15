@@ -41,7 +41,6 @@ function Form({ onNavigate, onStepChange }) {
   const formUploadViewRef = useRef(null);
   const formCompletedViewRef = useRef(null);
   const nextButtonRef = useRef(null);
-  const nextButtonHandlerRef = useRef(null);
   
   // Состояния для управления анимацией печатной машинки
   const [typedStep1Count, setTypedStep1Count] = useState(0);
