@@ -1,11 +1,11 @@
 {
   "files": {
     "main.css": "/before-life-after-life/static/css/main.079dab0d.css",
-    "main.js": "/before-life-after-life/static/js/main.e7e7fdc4.js",
+    "main.js": "/before-life-after-life/static/js/main.4214ceea.js",
     "static/css/884.e11e9387.chunk.css": "/before-life-after-life/static/css/884.e11e9387.chunk.css",
     "static/js/884.cfc7ba8b.chunk.js": "/before-life-after-life/static/js/884.cfc7ba8b.chunk.js",
-    "static/css/998.5a5b9eac.chunk.css": "/before-life-after-life/static/css/998.5a5b9eac.chunk.css",
-    "static/js/998.658c46ff.chunk.js": "/before-life-after-life/static/js/998.658c46ff.chunk.js",
+    "static/css/685.c1ae1258.chunk.css": "/before-life-after-life/static/css/685.c1ae1258.chunk.css",
+    "static/js/685.30d8c3fb.chunk.js": "/before-life-after-life/static/js/685.30d8c3fb.chunk.js",
     "static/css/31.f9139249.chunk.css": "/before-life-after-life/static/css/31.f9139249.chunk.css",
     "static/js/31.e103a47f.chunk.js": "/before-life-after-life/static/js/31.e103a47f.chunk.js",
     "static/css/42.ae583506.chunk.css": "/before-life-after-life/static/css/42.ae583506.chunk.css",
@@ -22,11 +22,11 @@
     "static/media/Hershey-Noailles-Futura-Triplex-Regular.ttf": "/before-life-after-life/static/media/Hershey-Noailles-Futura-Triplex-Regular.52026fac1c290753838d.ttf",
     "index.html": "/before-life-after-life/index.html",
     "main.079dab0d.css.map": "/before-life-after-life/static/css/main.079dab0d.css.map",
-    "main.e7e7fdc4.js.map": "/before-life-after-life/static/js/main.e7e7fdc4.js.map",
+    "main.4214ceea.js.map": "/before-life-after-life/static/js/main.4214ceea.js.map",
     "884.e11e9387.chunk.css.map": "/before-life-after-life/static/css/884.e11e9387.chunk.css.map",
     "884.cfc7ba8b.chunk.js.map": "/before-life-after-life/static/js/884.cfc7ba8b.chunk.js.map",
-    "998.5a5b9eac.chunk.css.map": "/before-life-after-life/static/css/998.5a5b9eac.chunk.css.map",
-    "998.658c46ff.chunk.js.map": "/before-life-after-life/static/js/998.658c46ff.chunk.js.map",
+    "685.c1ae1258.chunk.css.map": "/before-life-after-life/static/css/685.c1ae1258.chunk.css.map",
+    "685.30d8c3fb.chunk.js.map": "/before-life-after-life/static/js/685.30d8c3fb.chunk.js.map",
     "31.f9139249.chunk.css.map": "/before-life-after-life/static/css/31.f9139249.chunk.css.map",
     "31.e103a47f.chunk.js.map": "/before-life-after-life/static/js/31.e103a47f.chunk.js.map",
     "42.ae583506.chunk.css.map": "/before-life-after-life/static/css/42.ae583506.chunk.css.map",
@@ -41,6 +41,6 @@
   },
   "entrypoints": [
     "static/css/main.079dab0d.css",
-    "static/js/main.e7e7fdc4.js"
+    "static/js/main.4214ceea.js"
   ]
 }
